@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>TITLE</h1>
+<h3>Login to your account</h3>
+
+<form action="/profile" method="POST">
+	<input type="email" placeholder="E-mail Address" name="email" required><br>
+	<input type="password" placeholder="Password" name="pw" required><br>
+	<input type='submit' value="Sign in">
+</form>
+<hr>
+
+<form action="/register" method="POST">
+	<h4>or Sign Up</h4>
+	<input type="email" placeholder="E-mail address" name="emailsignup" required><br>
+	<input type="tel" placeholder="Your phone number" name="telenum"><br>
+	<a><small>phone numbers are formatted[country code][number including area code]</small></a><br>
+	<input type="password" placeholder="Create password" name="nupw"><br>
+	<input type="password" placeholder="Confirm password" name="nupw"><br>
+	<input type="submit" value="Sign up">
+</form>
+{% endblock %}

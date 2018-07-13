@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Call Log</h1>
+
+<h3><script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/DataTables/datatables.css">
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+	<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	</h3>
+
+    <table id="table_id" class="display" width="70%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Datetime created</th>
+                <th>Number called</th>
+                <th>duration</th>
+                <th>Recording</th>
+                <th>Add a note</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Fri, 13 Jul 2018 19:01</td>
+                <td>18005382583</td>
+                <td>6 seconds</td>
+                <td>**play button**</td>
+                <td>*inline editing**</td>
+                <td>**delete button**</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+<p>link here to change phone num<br>
+link here to change password<br>
+link here to change email</p>
+
+<a href="/call">Click here to make a call</a>
+
+{% endblock %}
