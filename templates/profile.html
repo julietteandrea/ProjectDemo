@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
+<form action="/logout">
+    <input type="submit" value="Sign out">
+</form>
 {% block content %}
 
 <h1>Call Log</h1>
 
-<h3><script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="/DataTables/datatables.css">
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-	<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-	</h3>
 
     <table id="table_id" class="display" width="70%" cellspacing="0">
         <thead>

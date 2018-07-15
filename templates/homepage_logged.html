@@ -1,13 +1,19 @@
 {% extends 'base.html' %}
+{% block head %}
+<form action="/logout">
+    <input type="submit" value="Sign out">
+</form>
+{% endblock %}
+
 {% block content %}
 
 <h1>Make a call</h1>
 
 	<form action="/call" method="POST">
 		Enter a phone number(add country code): 
-		<input type="tel" name="phonenum"><br><br>
+		<input type="tel" name="phonenum" autocomplete="on"><br><br>
 		Enter a second number(add country code):
-		<input type="tel" name="phonenum2"><br>
+		<input type="tel" name="phonenum2" autocomplete="on"><br>
 		<input type="submit" value="call">
 	</form>
 

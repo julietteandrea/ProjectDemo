@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request, session, flash, redirect
+from flask import Flask, render_template, request, session, flash, redirect, g, url_for
 from twilio.twiml.voice_response import VoiceResponse, Dial, Say
 from twilio.rest import Client
 import os
@@ -9,78 +9,107 @@ from model import connect_to_db, db, User, Phonecalls
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
-#app.secret_key = 
+app.secret_key = os.urandom(24)
 
+connect_to_db(app)
 account_sid = os.environ["TWILIO_ACCOUNT_SID"]
 auth_token = os.environ["TWILIO_AUTH_TOKEN"]
 client = Client(account_sid, auth_token)
 
-#call = client.calls('CA97b05c1368e2713740830c63441f075d')
-
 
 ####################### LOG IN / REGISTER ###################################
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
-    """shows the homepage, user must sign in or register"""
+    """shows the homepage, user must sign in(validation) or register"""
+    if request.method == "POST":
+        print(request.form)
+        username = request.form.get('username')
+        password = request.form.get('pw')
+        user_cred = User.query.filter_by(username=username).first()
 
+        if user_cred is None:
+            flash("Username not found! Try again or Register below.")
+            print("No user on file")
+            return render_template("homepage.html")
+        else:
+            if user_cred.password == password:
+                session['username'] = username
+                return render_template('profile.html')
+            else:
+                flash("Incorrect password, try again")
+                return render_template("homepage.html")
+    
     return render_template("homepage.html")
 
+@app.route('/profile')
+def logged_in():
+    if g.user:
+        return render_template('/profile')
 
-@app.route("/", methods=["POST"])
-def login():
-    """Validate user log in and redirect to their profile pg."""
+@app.before_request
+def before_request():
+    g.user = None
+    if 'username' in session:
+        g.user = session['username']
 
-    email = request.form.get("email")
-    pw = request.form.get("pw")
 
-    user_info = User.query.filter_by(email=email).all()
-    print(user_info)
-    print(user_info[0])
-    
-    if user_info[0].password == pw:
-        session['email'] = email
-        return redirect('/profile/{}'.format(user_info[0].user_id))
-    else:
-        flash("Incorrect password")
-        return redirect('/homepage')
+@app.route('/logout')
+def logout():
+    """removes the user from the session and logs out."""
+    session.pop('username', None)
+    return redirect('/')
 
+
+@app.route("/profile", methods=["POST"])
+def profile_view():
+    """displays user call log/user details."""
+    print(request.form)
+
+    # uview = db.session.query(User).get(user_id)
+    # user_email = uview.email
+    # username = uview.username
+    # user_phone = uview.phone_num
+    # user_duration_lst = uview.call_duration
+    # user_calltime_lst = uview.call_datetime
+    # user_recording_lst = uview.recording_url
+    # user_sidnum_lst = uview.call_sid
+
+    # return render_template("profile.html", user_email=user_email, username=username,
+    #                                        user_phone=user_phone, 
+    #                                        user_duration_lst=user_duration_lst, 
+    #                                        user_calltime_lst=user_calltime_lst, 
+    #                                        user_recording_lst=user_recording_lst,
+    #                                        user_sidnum_lst=user_sidnum_lst,
+    #                                        user_id=user_id)
     return render_template("profile.html")
 
 
-@app.route("/profile/<user_id>")
-def profile_view(user_id):
-    """displays user call log/user details."""
-    
-    uview = db.session.query(User).get(user_id)
-    user_email = uview.email
-    user_phone = uview.phone_num
-    user_duration_lst = uview.call_duration
-    user_calltime_lst = uview.call_datetime
-    user_recording_lst = uview.recording_url
-    user_sidnum_lst = uview.call_sid
-
-    return render_template("profile.html", user_email=user_email, user_phone=user_phone, 
-                                           user_duration_lst=user_duration_lst, 
-                                           user_calltime_lst=user_calltime_lst, 
-                                           user_recording_lst=user_recording_lst,
-                                           user_sidnum_lst=user_sidnum_lst,
-                                           user_id=user_id)
-
-
-@app.route("/register", methods=["POST"])
+@app.route("/register", methods=["GET", "POST"])
 def registration():
-    # """Add new user to database"""
+    """Add new user to database"""
+    #print(request.form)
+    if request.form.get('pw1') != request.form.get('pw2'):
+        flash("Passwords didn't match.")
+        return render_template("homepage.html")
+    else:
+        username = request.form.get('nusername')
+        email = request.form.get('email')
+        phone_num = request.form.get('telenum')
+        password = request.form.get('pw1')
 
-    # #code to confirm user isn't an existing user(if phone_num in db ALERT)
-    # #send a verification code to num to confirm registration
-    # new_user = User(email=emailsignup, phone_num=telenum, password=nupw)
-    # db.session.add(new_user)
-    # db.session.commit()
+        nope = 
 
+    #if username in db already, enter a different username
 
-    # return render_template("profile.html")
-    pass
+    new_user = User(email=email, phone_num=phone_num, password=password, username=username)
+    
+    print(new_user)
+    #db.session.add(new_user)
+    #db.session.commit()
+    flash("Thanks for registering! Log in to continue")
+    return redirect("/")
+    
 
 
 ##################### data for database #############################################   

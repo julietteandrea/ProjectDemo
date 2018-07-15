@@ -3,20 +3,27 @@
 <h1>TITLE</h1>
 <h3>Login to your account</h3>
 
-<form action="/profile" method="POST">
-	<input type="email" placeholder="E-mail Address" name="email" required><br>
+<form action="/" method="POST">
+	<input type="text" placeholder="Username" name="username" autocomplete="on" required><br>
 	<input type="password" placeholder="Password" name="pw" required><br>
 	<input type='submit' value="Sign in">
 </form>
 <hr>
 
-<form action="/register" method="POST">
-	<h4>or Sign Up</h4>
-	<input type="email" placeholder="E-mail address" name="emailsignup" required><br>
+<form action="/register" method="POST" class="pure-form">
+<div>
+	<h4>Don't have an account? Sign Up</h4>
+	<input type="text" placeholder="Username" name="nusername" required><br>
+	<input type="email" placeholder="E-mail address" name="email" required><br>
 	<input type="tel" placeholder="Your phone number" name="telenum"><br>
-	<a><small>phone numbers are formatted[country code][number including area code]</small></a><br>
-	<input type="password" placeholder="Create password" name="nupw"><br>
-	<input type="password" placeholder="Confirm password" name="nupw"><br>
-	<input type="submit" value="Sign up">
+	<a><small class="form-text text-muted">phone numbers are formatted[country code][number including area code]</small></a><br>
+	
+	<input type="password" placeholder="Enter password" name="pw1" id="password" pattern=".{5,}" title="five or more characters" required><br>
+	<input type="password" placeholder="Confirm password" name="pw2" id="confirm_password" required><br>
+	<button type="submit" class="pure-button pure-button-primary">Sign up</button>
+<!--
+	<input type="submit" class="pure-button pure-button-primary" value="Sign up">-->
+</div>
 </form>
+
 {% endblock %}

@@ -17,6 +17,7 @@ class User(db.Model):
 	email = db.Column(db.String(64), nullable=False)
 	phone_num = db.Column(db.String(13), nullable=False)
 	password = db.Column(db.String(64), nullable=False)
+	username = db.Column(db.String(15), nullable=False)
 
 
 	#define relationship to calls
@@ -26,7 +27,8 @@ class User(db.Model):
 	def __repr__(self):
 		"""provide helpful representation when printed."""
 
-		return "<User user_id={} email={} phone_num={} password={}>".format(self.user_id,
+		return "<User user_id={} username={} email={} phone_num={} password={}>".format(self.user_id,
+																			self.username,
 																			self.email,
 																			self.phone_num,
 																			self.password)
@@ -46,13 +48,14 @@ class Phonecalls(db.Model):
 	def __repr__(self):
 		"""Provide helpful representation when printed."""
 
-		return "<Phonecalls record_id={} user_id={} call_duration={} call_datetime={} call_sid={} recording_url={}>".format(
+		return "<Phonecalls record_id={} user_id={} call_duration={} call_datetime={} call_sid={} recording_url={} recording_sid={}>".format(
 																	self.record_id,
 																	self.user_id,
 																	self.call_duration,
 																	self.call_datetime,
 																	self.call_sid,
-																	self.recording_url)
+																	self.recording_url,
+																	self.recording_sid)
 
 ########################### HELPER FUNCTIONS ######################################
 
