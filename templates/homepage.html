@@ -4,25 +4,20 @@
 <h3>Login to your account</h3>
 
 <form action="/" method="POST">
-	<input type="text" placeholder="Username" name="username" autocomplete="on" required><br>
+	<input type="text" placeholder="Username" name="username" autocomplete="on" autocapitalize="off" required><br>
 	<input type="password" placeholder="Password" name="pw" required><br>
-	<input type='submit' value="Sign in">
+	<button type='submit'>Sign in</button>
 </form>
 <hr>
 
 <form action="/register" method="POST" class="pure-form">
 <div>
 	<h4>Don't have an account? Sign Up</h4>
-	<input type="text" placeholder="Username" name="nusername" required><br>
+	<input type="text" placeholder="Username" name="nusername" autocapitalize="off" required><br>
 	<input type="email" placeholder="E-mail address" name="email" required><br>
-	<input type="tel" placeholder="Your phone number" name="telenum"><br>
-	<a><small class="form-text text-muted">phone numbers are formatted[country code][number including area code]</small></a><br>
-	
 	<input type="password" placeholder="Enter password" name="pw1" id="password" pattern=".{5,}" title="five or more characters" required><br>
 	<input type="password" placeholder="Confirm password" name="pw2" id="confirm_password" required><br>
 	<button type="submit" class="pure-button pure-button-primary">Sign up</button>
-<!--
-	<input type="submit" class="pure-button pure-button-primary" value="Sign up">-->
 </div>
 </form>
 

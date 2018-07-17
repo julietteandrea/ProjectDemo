@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block head %}
+	<title>Phone Verification</title>
+{% endblock %}
+
+{% block content %}
+	<h1>TITLE</h1>
+
+	<form action="/verify" accept-charset="UTF-8" method="post">
+		<div>
+			<label>Enter the code you were sent:</label>
+			<input name="token" id="token">
+		</div>
+		<button name="button" type="submit">Verify</button>
+	</form>
+	{% endblock %}

@@ -4,3 +4,4 @@ Flask-SQLAlchemy==2.3.2
 Jinja2==2.10
 SQLAlchemy==1.2.8
 psycopg2==2.7.5
+authy

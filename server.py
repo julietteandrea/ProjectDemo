@@ -5,16 +5,31 @@ from twilio.rest import Client
 import os
 from jinja2 import StrictUndefined
 from model import connect_to_db, db, User, Phonecalls
+from authy.api import AuthyApiClient
+import datetime
+
 
 
 app = Flask(__name__)
+app.config.from_object('config')
 app.jinja_env.undefined = StrictUndefined
 app.secret_key = os.urandom(24)
+
+api = AuthyApiClient(app.config['AUTHY_API_KEY'])
 
 connect_to_db(app)
 account_sid = os.environ["TWILIO_ACCOUNT_SID"]
 auth_token = os.environ["TWILIO_AUTH_TOKEN"]
 client = Client(account_sid, auth_token)
+
+
+
+#Global variable
+CALL_SID_TO_USER_ID_MAP = {}
+#TODO -- replace with flask.g
+#from flask import g
+#g.CALL_SID_TO_USER_ID_MAP = {}
+
 
 
 ####################### LOG IN / REGISTER ###################################
@@ -30,22 +45,29 @@ def index():
 
         if user_cred is None:
             flash("Username not found! Try again or Register below.")
-            print("No user on file")
             return render_template("homepage.html")
         else:
             if user_cred.password == password:
                 session['username'] = username
-                return render_template('profile.html')
+                if user_cred.phone_num is None:
+                    flash("Welcome back! Please verify your phone number to complete registration.")
+                    return redirect("/phone_verification")
+                else:
+                    return render_template('profile.html')
             else:
                 flash("Incorrect password, try again")
                 return render_template("homepage.html")
     
     return render_template("homepage.html")
 
-@app.route('/profile')
-def logged_in():
-    if g.user:
-        return render_template('/profile')
+# @app.route('/profile')
+# def logged_in():
+#     """profile page only displayed to registered and signed in users."""
+#     if g.user:
+#     #if 'username' in session:
+#         return render_template('/profile.html')
+#     return redirect("/")
+
 
 @app.before_request
 def before_request():
@@ -88,29 +110,68 @@ def profile_view():
 @app.route("/register", methods=["GET", "POST"])
 def registration():
     """Add new user to database"""
-    #print(request.form)
     if request.form.get('pw1') != request.form.get('pw2'):
         flash("Passwords didn't match.")
         return render_template("homepage.html")
     else:
         username = request.form.get('nusername')
         email = request.form.get('email')
-        phone_num = request.form.get('telenum')
         password = request.form.get('pw1')
 
-        nope = 
-
-    #if username in db already, enter a different username
-
-    new_user = User(email=email, phone_num=phone_num, password=password, username=username)
+        if User.query.filter_by(username=username).first() is None:
+            new_user = User(email=email, password=password, username=username)
+            print(new_user)
+            db.session.add(new_user)
+            db.session.commit()
+            flash("We will now need you to verify your phone number in order to complete registration.")
+            return redirect("/phone_verification")
+        else:
+            flash("The username '{}' is already taken, please choose another".format(username))
+            return redirect("/")
     
-    print(new_user)
-    #db.session.add(new_user)
-    #db.session.commit()
-    flash("Thanks for registering! Log in to continue")
-    return redirect("/")
-    
+@app.route("/phone_verification", methods=["GET", "POST"])
+def phone_verification():
+    """Verify new user phone."""
+    if request.method == "POST":
+        country_code = request.form.get("country_code")
+        phone_number = request.form.get("phone_number")
+        method = request.form.get("method")
 
+        session['country_code'] = country_code
+        session['phone_number'] = phone_number
+
+        api.phones.verification_start(phone_number, country_code, via=method)
+        return redirect(url_for("verify"))
+    else:
+        return redirect("/phone_verification")
+    
+    return render_template("phone_verification.html")
+
+
+@app.route("/verify", methods=["GET", "POST"])
+def verify():
+    """Verify user new phone with code that was sent to the number provided."""
+    if request.method == "POST":
+        token = request.form.get("token")
+
+        phone_number = session.get("phone_number")
+        country_code = session.get("country_code")
+
+        verification = api.phones.verification_check(phone_number, country_code, token)
+
+        
+        if verification.ok():
+            if 'username' in session:
+                username = session['username']
+                user = User.query.filter_by(username=username).first()
+                user.phone_num = phone_number
+                db.session.commit()
+                flash("Success! Thanks for verifying your number. You added the following mobile number {} to your account".format(phone_number))
+                return render_template("/profile.html")
+        else:
+            return redirect(url_for("verify"))        
+
+    return render_template("verify.html")
 
 ##################### data for database #############################################   
 #prototype
@@ -118,42 +179,55 @@ def registration():
 @app.route("/call-to-db", methods=['POST'])
 def call_to_db():
     """twilio will send info here when call ends."""
-    #print(request.get_data())
-    #print("And now as json")
-    #print(request.get_json(force=True))
-    #print(request.form)
-    
-
+      
     #get specific data info from call via request.get_data()
     data = request.form
     call_sid = data["CallSid"]
-    timestamp = data["Timestamp"]
+    timestamp = data["Timestamp"][:-15]
     recording = data["RecordingUrl"]+".mp3"
     recording_sid = data["RecordingSid"]
-    duration = data["CallDuration"]
+    duration1 = int(data["CallDuration"])
+    duration = str(datetime.timedelta(seconds=duration1))
     print("##### CALL_SID = {}".format(call_sid))
     print("##### TIMESTAMP = {}".format(timestamp))
     print("##### RECORDING URL = {}".format(recording))
     print("##### RECORDING_SID = {}".format(recording_sid))
-    print("##### CALL DURATION = {} seconds".format(duration))
+    print("##### CALL DURATION = {}".format(duration))
     print("##### CALL TO = {}".format(PHONE_NUMBER))
-        
+ 
+    #Given the call_sid, we can get the user id from our dict
+    #TODO: check for existense first
+    #TODO: what if the user id is unavailabl??
+    user_id = CALL_SID_TO_USER_ID_MAP[call_sid]
+    print("##### USER_SID = {}".format(user_id))
     #fetch a Call resource
-    call = client.calls(call_sid).fetch()
-    print("fetch of call = {}".format(call))
+    # call = client.calls(call_sid).fetch()
+    # print("fetch of call = {}".format(call))
             
     #DATA TO GO INTO THE DATABASE
-    #if session['email'] == email
-        #new_call = Phonecalls(call_duration=duration, call_datetime=timestamp, call_sid=call_sid)
-        #db.session.add(new_call)
-        #db.session.commit()
-    #first_number --> call.to
-    #other_number --> GLOBAL VARIABLE
-    #user_id --> just put 0 for now
-    #recording_url --> call.recordings[0].url or something like that
-    #bang, send this data into the db. done
+
+    print (session)
+
+    # if 'username' in session:
+    #     username = session['username']
+    user = User.query.filter_by(username=user_id).all()
+    userid = user[0].user_id
+    if userid > 0:
+   #      #user.user_id = session['user_id']
+   #  #     # if Phonecalls.query.filter_by(user_id=user.user_id).first():
+        new_call = Phonecalls(user_id=userid, 
+            call_duration=duration, call_datetime=timestamp,
+             call_sid=call_sid, recording_url=recording,
+              recording_sid=recording_sid, number_called=PHONE_NUMBER)
+        db.session.add(new_call)
+        db.session.commit()
+        print(new_call)
+   # #bang, send this data into the db. done
+   #      return redirect("/profile")
+    # else: 
+    #     return "something wrong"
     return "ok"
-        
+
     
 def get_duration(call_sid):
     pass
@@ -171,14 +245,16 @@ def get_recording_mp3_url(recording_id):
     pass
 
 
- #############################################################################
+ ############################### PHONE CALLS ##############################
 
 
 @app.route("/call")
 def make_call():
-
-    return render_template('homepage_logged.html')
-
+    """renders page where signed in users can make a call."""
+    if 'username' in session:
+        return render_template('homepage_logged.html')
+    else:
+        return redirect("/")
 
 @app.route("/answer3", methods=['GET', 'POST'])
 def threewaycall():
@@ -196,7 +272,6 @@ def threewaycall():
 @app.route("/call", methods=["POST"])
 def calling():
     """makes a phone call with two numbers user inputs."""
-
     # in order for second num to be used in "/answer3" function
     global PHONE_NUMBER
     
@@ -215,6 +290,14 @@ def calling():
                         from_='+16692717646'
                         )
 
+    call_sid = call.sid
+    print(session)
+    user_name = session["username"]
+    #user_num = User.query.filter_by(username=user_name).all()
+    #userid = user_num[0].user_id
+    #TODO -- store user id as well as usernaem in session
+    CALL_SID_TO_USER_ID_MAP[call_sid] = user_name
+    #CALL_SID_TO_USER_ID_MAP[call_sid1] = userid
     return render_template('progresscall.html') 
 
 
@@ -242,7 +325,7 @@ def answer_call():
 
 
 if __name__ == "__main__":
-    pass
-    #app.run(port=5000, host='0.0.0.0', debug=True)
+    #pass
+    app.run(port=5000, host='0.0.0.0', debug=True)
 
 
