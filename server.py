@@ -32,13 +32,12 @@ CALL_SID_TO_USER_ID_MAP = {}
 
 
 
-####################### LOG IN / REGISTER ###################################
+################### LOG IN / REGISTER #######################################
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     """shows the homepage, user must sign in(validation) or register"""
     if request.method == "POST":
-        print(request.form)
         username = request.form.get('username')
         password = request.form.get('pw')
         user_cred = User.query.filter_by(username=username).first()
@@ -53,7 +52,7 @@ def index():
                     flash("Welcome back! Please verify your phone number to complete registration.")
                     return redirect("/phone_verification")
                 else:
-                    return render_template('profile.html')
+                    return redirect('/profile/{}'.format(session['username']))
             else:
                 flash("Incorrect password, try again")
                 return render_template("homepage.html")
@@ -83,30 +82,22 @@ def logout():
     return redirect('/')
 
 
-@app.route("/profile", methods=["POST"])
-def profile_view():
+@app.route("/profile/<username>")
+def profile_view(username):
     """displays user call log/user details."""
-    print(request.form)
-
-    # uview = db.session.query(User).get(user_id)
-    # user_email = uview.email
-    # username = uview.username
-    # user_phone = uview.phone_num
-    # user_duration_lst = uview.call_duration
-    # user_calltime_lst = uview.call_datetime
-    # user_recording_lst = uview.recording_url
-    # user_sidnum_lst = uview.call_sid
-
-    # return render_template("profile.html", user_email=user_email, username=username,
-    #                                        user_phone=user_phone, 
-    #                                        user_duration_lst=user_duration_lst, 
-    #                                        user_calltime_lst=user_calltime_lst, 
-    #                                        user_recording_lst=user_recording_lst,
-    #                                        user_sidnum_lst=user_sidnum_lst,
-    #                                        user_id=user_id)
-    return render_template("profile.html")
-
-
+    
+    user_detail = User.query.filter_by(username=session['username']).first()
+    user_username = user_detail.username
+    user_id_num = user_detail.user_id
+    user_email = user_detail.email
+    user_phone = user_detail.phone_num
+    user_calls = user_detail.calls
+   
+    return render_template("profile.html", user_id=user_id_num, user_email=user_email, 
+                                           user_username=user_username, user_phone=user_phone,
+                                           user_calls=user_calls)
+    
+   
 @app.route("/register", methods=["GET", "POST"])
 def registration():
     """Add new user to database"""
@@ -114,7 +105,7 @@ def registration():
         flash("Passwords didn't match.")
         return render_template("homepage.html")
     else:
-        username = request.form.get('nusername')
+        username = request.form.get('new_username')
         email = request.form.get('email')
         password = request.form.get('pw1')
 
@@ -129,6 +120,7 @@ def registration():
             flash("The username '{}' is already taken, please choose another".format(username))
             return redirect("/")
     
+
 @app.route("/phone_verification", methods=["GET", "POST"])
 def phone_verification():
     """Verify new user phone."""
@@ -153,7 +145,6 @@ def verify():
     """Verify user new phone with code that was sent to the number provided."""
     if request.method == "POST":
         token = request.form.get("token")
-
         phone_number = session.get("phone_number")
         country_code = session.get("country_code")
 
@@ -166,93 +157,53 @@ def verify():
                 user = User.query.filter_by(username=username).first()
                 user.phone_num = phone_number
                 db.session.commit()
-                flash("Success! Thanks for verifying your number. You added the following mobile number {} to your account".format(phone_number))
+                flash("Successful! Thanks for verifying. You added the following mobile number {} to your account".format(phone_number))
                 return render_template("/profile.html")
         else:
             return redirect(url_for("verify"))        
 
     return render_template("verify.html")
 
-##################### data for database #############################################   
-#prototype
+################## CALL DATA FOR DATABASE ####################################   
 
 @app.route("/call-to-db", methods=['POST'])
 def call_to_db():
     """twilio will send info here when call ends."""
+    """this route is ONLY called by twilio's api."""
+    """sessions no longer exist in this function."""
       
     #get specific data info from call via request.get_data()
+    #giving them variable names to store in database
     data = request.form
     call_sid = data["CallSid"]
-    timestamp = data["Timestamp"][:-15]
+    timestamp = data["Timestamp"][0:-15]
     recording = data["RecordingUrl"]+".mp3"
     recording_sid = data["RecordingSid"]
     duration1 = int(data["CallDuration"])
     duration = str(datetime.timedelta(seconds=duration1))
-    print("##### CALL_SID = {}".format(call_sid))
-    print("##### TIMESTAMP = {}".format(timestamp))
-    print("##### RECORDING URL = {}".format(recording))
-    print("##### RECORDING_SID = {}".format(recording_sid))
-    print("##### CALL DURATION = {}".format(duration))
-    print("##### CALL TO = {}".format(PHONE_NUMBER))
- 
-    #Given the call_sid, we can get the user id from our dict
-    #TODO: check for existense first
-    #TODO: what if the user id is unavailabl??
+    #user_id/username grabbed from global var to add calls according to user in session.
     user_id = CALL_SID_TO_USER_ID_MAP[call_sid]
-    print("##### USER_SID = {}".format(user_id))
-    #fetch a Call resource
-    # call = client.calls(call_sid).fetch()
-    # print("fetch of call = {}".format(call))
-            
+                   
     #DATA TO GO INTO THE DATABASE
-
-    print (session)
-
-    # if 'username' in session:
-    #     username = session['username']
     user = User.query.filter_by(username=user_id).all()
     userid = user[0].user_id
     if userid > 0:
-   #      #user.user_id = session['user_id']
-   #  #     # if Phonecalls.query.filter_by(user_id=user.user_id).first():
-        new_call = Phonecalls(user_id=userid, 
-            call_duration=duration, call_datetime=timestamp,
-             call_sid=call_sid, recording_url=recording,
-              recording_sid=recording_sid, number_called=PHONE_NUMBER)
+        new_call = Phonecalls(user_id=userid, call_duration=duration, call_datetime=timestamp,
+                              call_sid=call_sid, recording_url=recording,
+                              recording_sid=recording_sid, number_called=PHONE_NUMBER)
         db.session.add(new_call)
         db.session.commit()
         print(new_call)
-   # #bang, send this data into the db. done
-   #      return redirect("/profile")
-    # else: 
-    #     return "something wrong"
+      
     return "ok"
 
-    
-def get_duration(call_sid):
-    pass
-
-
-def get_start_time(call_sid):
-    pass
-
-
-def get_recording_id(call_sid):
-    pass
-
-
-def get_recording_mp3_url(recording_id):
-    pass
-
-
- ############################### PHONE CALLS ##############################
-
+#################### MAKE PHONE CALLS #########################################
 
 @app.route("/call")
 def make_call():
-    """renders page where signed in users can make a call."""
+    """renders page where ONLY signed in users can make a call."""
     if 'username' in session:
-        return render_template('homepage_logged.html')
+        return render_template('make_call.html', user_username=session['username'])
     else:
         return redirect("/")
 
@@ -262,7 +213,7 @@ def threewaycall():
     
     print(request.get_data())
     response = VoiceResponse()
-    response.say("Thank you for calling! Please hold while we connect you", 
+    response.say("Great! Please hold while we connect you", 
             voice='alice')
     response.dial(PHONE_NUMBER)
     
@@ -274,8 +225,12 @@ def calling():
     """makes a phone call with two numbers user inputs."""
     # in order for second num to be used in "/answer3" function
     global PHONE_NUMBER
-    
-    phonenum = request.form.get("phonenum")
+    #OPTIONAL: phonenum = request.form.get("phonenum")<-if i want the user to input a dif origin
+    #num instead of the one saved inside the db.
+    #BELOW: grabs the user's verified num to make the call.
+    username = session['username']
+    user = User.query.filter_by(username=username).all()
+    phonenum = user[0].phone_num
     phonenum2 = request.form.get("phonenum2")
     PHONE_NUMBER = phonenum2
 
@@ -290,19 +245,16 @@ def calling():
                         from_='+16692717646'
                         )
 
+    #saving user-in-session's info to a global var to use for when twilio sends only call data back. 
+    #Twilio won't have client side info. Call data is sent to a function unable to be called by flask
     call_sid = call.sid
     print(session)
     user_name = session["username"]
-    #user_num = User.query.filter_by(username=user_name).all()
-    #userid = user_num[0].user_id
-    #TODO -- store user id as well as usernaem in session
     CALL_SID_TO_USER_ID_MAP[call_sid] = user_name
-    #CALL_SID_TO_USER_ID_MAP[call_sid1] = userid
-    return render_template('progresscall.html') 
+    return render_template('progresscall.html', user_username=user_name) 
 
 
 ####################### CALL RETURNED ######################################    
-
 
 @app.route("/answer", methods=['GET', 'POST'])
 def answer_call():
@@ -316,7 +268,7 @@ def answer_call():
     #recording caller's phone call
     resp.record()
     #end the call when caller hangsup
-    resp.hangup
+    resp.hangup()
     
     return str(resp)
 

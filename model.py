@@ -39,9 +39,9 @@ class Phonecalls(db.Model):
 
 	record_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-	call_duration = db.Column(db.Integer)
-	call_datetime = db.Column(db.DateTime, nullable=False)
-	call_sid = db.Column(db.Integer, nullable=False)
+	call_duration = db.Column(db.String(200))
+	call_datetime = db.Column(db.String(20), nullable=False)
+	call_sid = db.Column(db.String(200), nullable=False)
 	recording_url = db.Column(db.String)
 	recording_sid = db.Column(db.String(200))
 	number_called = db.Column(db.String(15))

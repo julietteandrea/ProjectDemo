@@ -1,32 +1,47 @@
 {% extends 'base.html' %}
+
+{% block head %}
+
+<link rel="stylesheet" href="/static/css/profile.css">
+{% endblock %}
 {% block content %}
 <form action="/logout">
     <input type="submit" value="Sign out">
 </form>
 
-<h1>Call Log</h1>
+<h3>Call Log/Call History</h3>
+<h2>(maybe profile picture? you know to make it look nice) USERNAME</h2>
 
+<!-- {% for item in user_calls %}
 
-    <table id="table_id" class="display" width="70%" cellspacing="0">
+<audio id="myAudio">
+  <source src="{{ item.recording_url }}" type="audio/ogg">
+  <source src="{{ item.recording_url }}" type="audio/mpeg"></audio>
+{% endfor %} -->
+
+   <table id="table_id" class="display" width="70%" cellspacing="0">
         <thead>
             <tr>
-                <th>Datetime created</th>
+                <th>Date created</th>
                 <th>Number called</th>
-                <th>duration</th>
+                <th>Duration(H:M:S)</th>
                 <th>Recording</th>
-                <th>Add a note</th>
-                <th>Delete</th>
+                <th>Add a note/Description</th>
+                <th>Delete/Action</th>
             </tr>
         </thead>
         <tbody>
+                {% for item in user_calls %}
             <tr>
-                <td>Fri, 13 Jul 2018 19:01</td>
-                <td>18005382583</td>
-                <td>6 seconds</td>
-                <td>**play button**</td>
+                <td>{{ item.call_datetime }}</td>
+                <td>{{ item.number_called }}</td>
+                <td>{{ item.call_duration }}</td>
+                <!-- <td><button onclick="playAudio()" type="button" class="playbutton">Play</button> <button onclick="pauseAudio()" type="button" class="pausebutton">Pause</button></td> -->
+                <td><audio controls><source src="{{ item.recording_url}}"/></audio></td>
                 <td>*inline editing**</td>
                 <td>**delete button**</td>
             </tr>
+                {% endfor %}
             <tr>
                 <td></td>
                 <td></td>
@@ -34,12 +49,25 @@
         </tbody>
     </table>
 
+<!-- <script>
+var x = document.getElementById("myAudio"); 
 
+function playAudio() { 
+    x.play(); 
+} 
 
-<p>link here to change phone num<br>
-link here to change password<br>
-link here to change email</p>
+function pauseAudio() { 
+    x.pause(); 
+} 
+</script>
+ -->
+<h2>Account details</h2>
+<p><b>Username:</b> {{ user_username }}<br>
+<b>Primary phone number:</b> {{ user_phone }}<br>
+<b>Email address:</b> {{ user_email }}<br></p>
 
 <a href="/call">Click here to make a call</a>
 
+
 {% endblock %}
+
