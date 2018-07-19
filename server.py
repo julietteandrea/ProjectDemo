@@ -34,40 +34,35 @@ CALL_SID_TO_USER_ID_MAP = {}
 
 ################### LOG IN / REGISTER #######################################
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
 def index():
+    """displays homepage."""
+    if 'username' not in session:
+        return render_template("homepage.html")
+
+@app.route("/", methods=["POST"])
+def login_register():
     """shows the homepage, user must sign in(validation) or register"""
-    if request.method == "POST":
-        username = request.form.get('username')
-        password = request.form.get('pw')
-        user_cred = User.query.filter_by(username=username).first()
+    username = request.form.get('username')
+    password = request.form.get('pw')
+    user_cred = User.query.filter_by(username=username).first()
 
-        if user_cred is None:
-            flash("Username not found! Try again or Register below.")
-            return render_template("homepage.html")
+    if user_cred is None:
+        flash("Username not found! Try again or Register below.")
+        return render_template("homepage.html")
+        
+    if user_cred.password == password:
+        session['username'] = username
+        if user_cred.phone_num is None:
+            flash("Welcome back! Please verify your phone number to complete registration.")
+            return render_template("phone_verification.html")
         else:
-            if user_cred.password == password:
-                session['username'] = username
-                if user_cred.phone_num is None:
-                    flash("Welcome back! Please verify your phone number to complete registration.")
-                    return redirect("/phone_verification")
-                else:
-                    return redirect('/profile/{}'.format(session['username']))
-            else:
-                flash("Incorrect password, try again")
-                return render_template("homepage.html")
+            return redirect('/profile/{}'.format(session['username']))
+    else:
+        flash("Incorrect password, try again")
+        return render_template("homepage.html")
     
-    return render_template("homepage.html")
-
-# @app.route('/profile')
-# def logged_in():
-#     """profile page only displayed to registered and signed in users."""
-#     if g.user:
-#     #if 'username' in session:
-#         return render_template('/profile.html')
-#     return redirect("/")
-
-
+    
 @app.before_request
 def before_request():
     g.user = None
@@ -115,7 +110,7 @@ def registration():
             db.session.add(new_user)
             db.session.commit()
             flash("We will now need you to verify your phone number in order to complete registration.")
-            return redirect("/phone_verification")
+            return render_template("phone_verification.html")
         else:
             flash("The username '{}' is already taken, please choose another".format(username))
             return redirect("/")
@@ -157,9 +152,11 @@ def verify():
                 user = User.query.filter_by(username=username).first()
                 user.phone_num = phone_number
                 db.session.commit()
-                flash("Successful! Thanks for verifying. You added the following mobile number {} to your account".format(phone_number))
-                return render_template("/profile.html")
+                flash("Successful! Thanks for verifying. You added the following mobile " +
+                        "number {} to your account.".format(phone_number))
+                return redirect('/profile/{}'.format(session['username']))
         else:
+            flash("Wrong verification code")
             return redirect(url_for("verify"))        
 
     return render_template("verify.html")
@@ -213,8 +210,7 @@ def threewaycall():
     
     print(request.get_data())
     response = VoiceResponse()
-    response.say("Great! Please hold while we connect you", 
-            voice='alice')
+    response.say("Please hold while we connect you", voice='alice')
     response.dial(PHONE_NUMBER)
     
     return str(response)
@@ -233,7 +229,6 @@ def calling():
     phonenum = user[0].phone_num
     phonenum2 = request.form.get("phonenum2")
     PHONE_NUMBER = phonenum2
-
 
     call = client.calls.create(record=True,
                         method='GET',
@@ -262,9 +257,9 @@ def answer_call():
 
     #start TwiML response
     resp = VoiceResponse()
-    #read a message aloud to the caller
-    resp.say("The person you are trying to reach is unavailable, please try them on their personal number. Have a splendid day. Goodbye!", 
-            voice='alice')
+    #read a message aloud to the caller if caller calls the twilio num
+    resp.say("The person you are trying to reach is unavailable, please try them on " + 
+                "their personal number. Goodbye!", voice='alice')
     #recording caller's phone call
     resp.record()
     #end the call when caller hangsup

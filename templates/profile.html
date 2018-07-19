@@ -1,33 +1,51 @@
 {% extends 'base.html' %}
 
 {% block head %}
+   
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<link rel="stylesheet" href="/static/css/profile.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+
 {% endblock %}
 {% block content %}
-<form action="/logout">
-    <input type="submit" value="Sign out">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">TITLE</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <form class="form-inline">
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user_username }}</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#">Profile/Call log</a>
+          <a class="dropdown-item" href="/call">Make a call</a>
+          <a class="dropdown-item" href="/logout">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </div>
 </form>
+</nav>
 
-<h3>Call Log/Call History</h3>
-<h2>(maybe profile picture? you know to make it look nice) USERNAME</h2>
+<h2>(maybe profile picture? you know to make it look nice)</h2>
 
-<!-- {% for item in user_calls %}
-
-<audio id="myAudio">
-  <source src="{{ item.recording_url }}" type="audio/ogg">
-  <source src="{{ item.recording_url }}" type="audio/mpeg"></audio>
-{% endfor %} -->
-
-   <table id="table_id" class="display" width="70%" cellspacing="0">
+<div class="container">
+    <h2>Call History</h2>
+   <table class="table table-hover table-dark table-sm">
         <thead>
             <tr>
-                <th>Date created</th>
-                <th>Number called</th>
-                <th>Duration(H:M:S)</th>
-                <th>Recording</th>
-                <th>Add a note/Description</th>
-                <th>Delete/Action</th>
+                <th scope="col">Date created</th>
+                <th scope="col">Number called</th>
+                <th scope="col">Duration(H:M:S)</th>
+                <th scope="col">Recording</th>
+                <th scope="col">Add a note/Description</th>
+                <th scope="col">Delete/Action</th>
             </tr>
         </thead>
         <tbody>
@@ -36,37 +54,25 @@
                 <td>{{ item.call_datetime }}</td>
                 <td>{{ item.number_called }}</td>
                 <td>{{ item.call_duration }}</td>
-                <!-- <td><button onclick="playAudio()" type="button" class="playbutton">Play</button> <button onclick="pauseAudio()" type="button" class="pausebutton">Pause</button></td> -->
                 <td><audio controls><source src="{{ item.recording_url}}"/></audio></td>
                 <td>*inline editing**</td>
                 <td>**delete button**</td>
             </tr>
                 {% endfor %}
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
         </tbody>
     </table>
+</div>
 
-<!-- <script>
-var x = document.getElementById("myAudio"); 
 
-function playAudio() { 
-    x.play(); 
-} 
-
-function pauseAudio() { 
-    x.pause(); 
-} 
-</script>
- -->
 <h2>Account details</h2>
 <p><b>Username:</b> {{ user_username }}<br>
 <b>Primary phone number:</b> {{ user_phone }}<br>
 <b>Email address:</b> {{ user_email }}<br></p>
 
-<a href="/call">Click here to make a call</a>
+<!--JQuery, Popper.js, and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
 
 
 {% endblock %}
