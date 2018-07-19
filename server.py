@@ -39,6 +39,8 @@ def index():
     """displays homepage."""
     if 'username' not in session:
         return render_template("homepage.html")
+    else:
+        return redirect('/profile/{}'.format(session['username']))
 
 @app.route("/", methods=["POST"])
 def login_register():
