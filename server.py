@@ -42,6 +42,7 @@ def index():
     else:
         return redirect('/profile/{}'.format(session['username']))
 
+
 @app.route("/", methods=["POST"])
 def login_register():
     """shows the homepage, user must sign in(validation) or register"""
@@ -72,28 +73,13 @@ def before_request():
         g.user = session['username']
 
 
-@app.route('/logout')
+@app.route("/logout")
 def logout():
     """removes the user from the session and logs out."""
     session.pop('username', None)
     return redirect('/')
 
 
-@app.route("/profile/<username>")
-def profile_view(username):
-    """displays user call log/user details."""
-    
-    user_detail = User.query.filter_by(username=session['username']).first()
-    user_username = user_detail.username
-    user_id_num = user_detail.user_id
-    user_email = user_detail.email
-    user_phone = user_detail.phone_num
-    user_calls = user_detail.calls
-   
-    return render_template("profile.html", user_id=user_id_num, user_email=user_email, 
-                                           user_username=user_username, user_phone=user_phone,
-                                           user_calls=user_calls)
-    
    
 @app.route("/register", methods=["GET", "POST"])
 def registration():
@@ -163,6 +149,52 @@ def verify():
 
     return render_template("verify.html")
 
+####################### PROFILE VIEW ##############################################
+
+@app.route("/profile/<username>")
+def profile_view(username):
+    """displays user call log/user details."""
+    if 'username' not in session:
+        return redirect("/")
+    
+    user_detail = User.query.filter_by(username=session['username']).first()
+    user_username = user_detail.username
+    user_id_num = user_detail.user_id
+    user_email = user_detail.email
+    user_phone = user_detail.phone_num
+    user_calls = user_detail.calls
+   
+    return render_template("profile.html", user_id=user_id_num, user_email=user_email, 
+                                           user_username=user_username, user_phone=user_phone,
+                                           user_calls=user_calls)
+
+
+@app.route("/profile_changed", methods=['POST'])
+def add_comment():
+    """user adds a comment to a specific call and gets added into the db."""
+    print(request.form)
+    call_sid = request.form.get("call_sid")
+    comment = request.form.get("comment")
+    print("call_sid = {}".format(call_sid))
+    print("comment = {}".format(comment))
+
+    
+    call = Phonecalls.query.filter_by(call_sid=call_sid).first()
+    call.user_comments = comment
+    db.session.commit()
+    
+    return redirect("/profile/{}".format(session['username']))
+    
+
+@app.route("/delete", methods=['POST'])
+def delete_call():
+    """deletes call data from call log and db. function done by the user."""
+    call_sid = request.form.get("call_sid")
+    call = Phonecalls.query.filter_by(call_sid=call_sid).first()
+    db.session.delete(call)
+    db.session.commit()
+    return redirect("/profile/{}".format(session['username']))
+    
 ################## CALL DATA FOR DATABASE ####################################   
 
 @app.route("/call-to-db", methods=['POST'])

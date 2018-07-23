@@ -45,18 +45,20 @@ class Phonecalls(db.Model):
 	recording_url = db.Column(db.String)
 	recording_sid = db.Column(db.String(200))
 	number_called = db.Column(db.String(15))
+	user_comments = db.Column(db.String(60))
 
 	def __repr__(self):
 		"""Provide helpful representation when printed."""
 
-		return "<Phonecalls record_id={} user_id={} call_duration={} call_datetime={} call_sid={} recording_url={} recording_sid={}>".format(
+		return "<Phonecalls record_id={} user_id={} call_duration={} call_datetime={} call_sid={} recording_url={} recording_sid={} user_comments={}>".format(
 																	self.record_id,
 																	self.user_id,
 																	self.call_duration,
 																	self.call_datetime,
 																	self.call_sid,
 																	self.recording_url,
-																	self.recording_sid)
+																	self.recording_sid,
+																	self.user_comments)
 
 ########################### HELPER FUNCTIONS ######################################
 

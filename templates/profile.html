@@ -35,17 +35,23 @@
 
 <h2>(maybe profile picture? you know to make it look nice)</h2>
 
+<h2>Account details</h2>
+<p><b>Username:</b> {{ user_username }}<br>
+<b>Primary phone number:</b> {{ user_phone }}<br>
+<b>Email address:</b> {{ user_email }}<br></p>
+
+
 <div class="container">
-    <h2>Call History</h2>
-   <table class="table table-hover table-dark table-sm">
+    <h2>Call Log</h2>
+    <table id="calllog_table" class="table-sm table-hover">
         <thead>
             <tr>
                 <th scope="col">Date created</th>
                 <th scope="col">Number called</th>
-                <th scope="col">Duration(H:M:S)</th>
+                <th scope="col">Duration</th>
                 <th scope="col">Recording</th>
-                <th scope="col">Add a note/Description</th>
-                <th scope="col">Delete/Action</th>
+                <th scope="col">Description</th>
+                <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -54,9 +60,21 @@
                 <td>{{ item.call_datetime }}</td>
                 <td>{{ item.number_called }}</td>
                 <td>{{ item.call_duration }}</td>
-                <td><audio controls><source src="{{ item.recording_url}}"/></audio></td>
-                <td>*inline editing**</td>
-                <td>**delete button**</td>
+                <td><audio controls><source src="{{ item.recording_url }}"/></audio></td>
+                <td> <div>
+                    <form action="/profile_changed" accept-charset="UTF-8" method="post">
+                    <input type="text" name="comment" id="comment_id" maxlength="50" value="{{ item.user_comments }}"><input type="submit" value="Save" class="btn-xs">
+                </form>
+                    </div></td>
+                <td><div>
+                    <form action="/delete" accept-charset="UTF-8" method="post">
+                    <input type="hidden" name="call_sid" id="call_sid_id" value="{{ item.call_sid }}">
+                    <input type="submit" value="x" id="delete-btn" class="btn btn-xs" name="delete" onclick="msg()">
+                    </form>
+                    </div>
+                </td>
+                    
+                
             </tr>
                 {% endfor %}
         </tbody>
@@ -64,16 +82,50 @@
 </div>
 
 
-<h2>Account details</h2>
-<p><b>Username:</b> {{ user_username }}<br>
-<b>Primary phone number:</b> {{ user_phone }}<br>
-<b>Email address:</b> {{ user_email }}<br></p>
+
+
+
 
 <!--JQuery, Popper.js, and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
 
+<!--DataTables.net downloaded locally -->
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="/static/js/jquery.dataTables.min.js">
+</script>
+
+<!-- Javascript for this page -->
+<script type="text/javascript">
+
+/*let deleteBtn = doucment.querySelector('#delete-btn');*/
+
+function msg(evt) {
+    alert("Call Deleted");
+    evt,preventDefault();
+}
+    
+
+/*deleteBtn.addEventListener('submit', msg);*/
+
+
+//Tell browser what to call when the page is ready to be viewed
+$(document).ready( 
+    //Call this anonymous function
+    function () {
+        //Create a DataTable
+        var data_table = $('#calllog_table').DataTable(
+            {
+                "order": [[ 0, "asc" ]]
+            });
+        //var column = data_table.columns(0);
+        //column.visible(false);
+    } 
+);
+
+
+</script>
 
 {% endblock %}
 
