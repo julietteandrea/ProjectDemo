@@ -8,12 +8,13 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+<title>Project Demo</title>
 
 {% endblock %}
 {% block content %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">TITLE</a>
+  <a class="navbar-brand" href="#">Project Demo</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -41,7 +42,10 @@
 <b>Email address:</b> {{ user_email }}<br></p>
 
 
-<div class="container">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-8">
     <h2>Call Log</h2>
     <table id="calllog_table" class="table-sm table-hover">
         <thead>
@@ -63,6 +67,7 @@
                 <td><audio controls><source src="{{ item.recording_url }}"/></audio></td>
                 <td> <div>
                     <form action="/profile_changed" accept-charset="UTF-8" method="post">
+                    <input type="hidden" name="call_sid" id="call_sid_id" value="{{ item.call_sid }}">
                     <input type="text" name="comment" id="comment_id" maxlength="50" value="{{ item.user_comments }}"><input type="submit" value="Save" class="btn-xs">
                 </form>
                     </div></td>
@@ -79,6 +84,9 @@
                 {% endfor %}
         </tbody>
     </table>
+</div>
+<div class="col-sm"></div>
+</div>
 </div>
 
 
@@ -117,7 +125,7 @@ $(document).ready(
         //Create a DataTable
         var data_table = $('#calllog_table').DataTable(
             {
-                "order": [[ 0, "asc" ]]
+                "order": [[ 0, "desc" ]]
             });
         //var column = data_table.columns(0);
         //column.visible(false);

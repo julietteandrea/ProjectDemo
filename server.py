@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, request, session, flash, redirect, g, url_for
-from twilio.twiml.voice_response import VoiceResponse, Dial, Say
+from twilio.twiml.voice_response import VoiceResponse, Dial, Say, Record
 from twilio.rest import Client
 import os
 from jinja2 import StrictUndefined
@@ -26,6 +26,7 @@ client = Client(account_sid, auth_token)
 
 #Global variable
 CALL_SID_TO_USER_ID_MAP = {}
+RETURN_CALL_USERNAME = {}
 #TODO -- replace with flask.g
 #from flask import g
 #g.CALL_SID_TO_USER_ID_MAP = {}
@@ -60,6 +61,7 @@ def login_register():
             flash("Welcome back! Please verify your phone number to complete registration.")
             return render_template("phone_verification.html")
         else:
+            flash("Welcome back! Let's make a call")
             return redirect('/profile/{}'.format(session['username']))
     else:
         flash("Incorrect password, try again")
@@ -180,6 +182,12 @@ def add_comment():
 
     
     call = Phonecalls.query.filter_by(call_sid=call_sid).first()
+    if call is None:
+        #What do do if the web browser sends an invalid request?
+        #TODO: Something
+        #Right now: nothing
+        pass
+
     call.user_comments = comment
     db.session.commit()
     
@@ -197,24 +205,37 @@ def delete_call():
     
 ################## CALL DATA FOR DATABASE ####################################   
 
+from pytz import timezone
+import datetime
+
+def timestamp2nicetime(timestamp):
+    dt = datetime.datetime.strptime(timestamp,"%a, %d %b %Y %H:%M:%S %z")
+    return dt.astimezone(timezone('US/Pacific')).strftime("%a %d %b %Y %H:%M") + " PST"
+
+def datetime2nicetime(dt):
+    return dt.astimezone(timezone('US/Pacific')).strftime("%a %d %b %Y %H:%M") + " PST"
+
+
 @app.route("/call-to-db", methods=['POST'])
 def call_to_db():
-    """twilio will send info here when call ends."""
-    """this route is ONLY called by twilio's api."""
+    """adding outgoing call to db."""
+    """twilio will send info here when call ends. this route is ONLY called by twilio's api."""
     """sessions no longer exist in this function."""
       
     #get specific data info from call via request.get_data()
     #giving them variable names to store in database
     data = request.form
     call_sid = data["CallSid"]
-    timestamp = data["Timestamp"][0:-15]
+#    print(data["Timestamp"])
+#    print(type(data["Timestamp"]))
+    timestamp = timestamp2nicetime(data["Timestamp"])#[0:-15]
     recording = data["RecordingUrl"]+".mp3"
     recording_sid = data["RecordingSid"]
     duration1 = int(data["CallDuration"])
     duration = str(datetime.timedelta(seconds=duration1))
     #user_id/username grabbed from global var to add calls according to user in session.
     user_id = CALL_SID_TO_USER_ID_MAP[call_sid]
-                   
+    
     #DATA TO GO INTO THE DATABASE
     user = User.query.filter_by(username=user_id).all()
     userid = user[0].user_id
@@ -227,6 +248,40 @@ def call_to_db():
         print(new_call)
       
     return "ok"
+
+
+@app.route("/incoming-call-to-db", methods=['GET'])
+def incoming_call_to_db():
+    """adding incoming call to db."""
+    data = request.args
+    print("incoming call data:")
+    print(data)
+    call_sid = data["CallSid"]
+    twilio_call = client.calls(call_sid).fetch()
+    print("date created = {}".format(twilio_call.date_created))
+    timestamp = datetime2nicetime(twilio_call.date_created)
+    recording = data["RecordingUrl"]+".mp3"
+    recording_sid = data["RecordingSid"]
+    duration1 = int(data["RecordingDuration"])
+    duration = str(datetime.timedelta(seconds=duration1))
+    #username grabbed from global var to add calls according to user.
+    user_name = RETURN_CALL_USERNAME
+    print(user_name)
+    #DATA TO GO INTO THE DATABASE
+    caller_num = data["Caller"][2:]
+    caller = User.query.filter_by(phone_num=caller_num).all()
+    
+    userid = caller[0].user_id
+    if userid > 0:
+        new_call = Phonecalls(user_id=userid, call_duration=duration, call_datetime=timestamp,
+                              call_sid=call_sid, recording_url=recording,
+                              recording_sid=recording_sid, number_called="Incoming call")
+        db.session.add(new_call)
+        db.session.commit()
+        print(new_call)
+      
+    return "ok"
+
 
 #################### MAKE PHONE CALLS #########################################
 
@@ -285,21 +340,36 @@ def calling():
 
 ####################### CALL RETURNED ######################################    
 
-@app.route("/answer", methods=['GET', 'POST'])
+@app.route("/answer", methods=['POST'])
 def answer_call():
     """Respond to incoming phone calls with a brief message."""
 
     #start TwiML response
     resp = VoiceResponse()
     #read a message aloud to the caller if caller calls the twilio num
-    resp.say("The person you are trying to reach is unavailable, please try them on " + 
-                "their personal number. Goodbye!", voice='alice')
+    #if caller number in database, record, otherwise, text to voice message.
+    data = request.form
+    print("################# data {}".format(data))
+    caller_num = data["Caller"][2:]
+    caller = User.query.filter_by(phone_num=caller_num).all()
+    user_num = caller[0].phone_num
+    if user_num == caller_num:
+        resp.record(method='GET',
+                    timeout=24*60*60, #24 hours is a nice large upper bound
+                    finish_on_key='',
+                    action='http://juliettedemo.ngrok.io/incoming-call-to-db')
+    else:
+        resp.say("The person you are trying to reach is unavailable", voice='alice')
+    #print("######## request form {}".format(request.form))
     #recording caller's phone call
-    resp.record()
+    #resp.record()
     #end the call when caller hangsup
-    resp.hangup()
-    
-    return str(resp)
+        resp.hangup()
+    r = str(resp)
+    #r = r.replace("finishonkey","finishOnKey")        
+    #print("########## OLD RESP = {}".format(str(resp)))
+    print("########## NEW RESP = {}".format(str(r)))
+    return r
 
 
 ###########################################################################
@@ -308,5 +378,8 @@ def answer_call():
 if __name__ == "__main__":
     #pass
     app.run(port=5000, host='0.0.0.0', debug=True)
+
+
+
 
 
