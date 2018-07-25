@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block head %}
-	
 	<!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
-	<title>ProjectDemo</title>
+
+<title>ProjectDemo</title>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+	<ul class=flashes>
+	{% for message in messages %}
+    	<li>{{ message }}</li>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+	{% block head %}
+	
 	{% endblock %}
 	
 </head>
 
 <body>
 	{% block content %} 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-	{% for message in messages %}
-    	{{ message }}
-    {% endfor %}
-{% endif %}
-{% endwith %}
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">

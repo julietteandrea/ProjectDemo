@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Project Demo</h1>
+
+<nav class="navbar navbar-expand-lg" style="background-color: #16212C;">
+  <a class="navbar-brand" style="color: #DB3687;">Project Demo</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+ </nav>
+
+<div align="center">
 <h3>Login to your account</h3>
 
 <form action="/" method="POST">
@@ -8,17 +16,20 @@
 	<input type="password" placeholder="Password" name="pw" required><br>
 	<button type='submit'>Sign in</button>
 </form>
+</div>
 <hr>
 
+<div align="center">
 <form action="/register" method="POST" class="pure-form">
 <div>
 	<h4>Don't have an account? Sign Up</h4>
 	<input type="text" placeholder="Username" name="new_username" autocapitalize="off" required><br>
 	<input type="email" placeholder="E-mail address" name="email" required><br>
+	<!-- <input type="file" name="profile_pic" accept="image/*"> -->
 	<input type="password" placeholder="Enter password" name="pw1" id="password" pattern=".{5,}" title="five or more characters" required><br>
 	<input type="password" placeholder="Confirm password" name="pw2" id="confirm_password" required><br>
 	<button type="submit" class="pure-button pure-button-primary">Sign up</button>
 </div>
 </form>
-
+</div>
 {% endblock %}

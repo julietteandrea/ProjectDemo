@@ -45,7 +45,7 @@ def index():
 
 
 @app.route("/", methods=["POST"])
-def login_register():
+def login_or_register():
     """shows the homepage, user must sign in(validation) or register"""
     username = request.form.get('username')
     password = request.form.get('pw')
@@ -61,26 +61,18 @@ def login_register():
             flash("Welcome back! Please verify your phone number to complete registration.")
             return render_template("phone_verification.html")
         else:
-            flash("Welcome back! Let's make a call")
+            flash("Log in Successful")
             return redirect('/profile/{}'.format(session['username']))
     else:
         flash("Incorrect password, try again")
         return render_template("homepage.html")
     
-    
-@app.before_request
-def before_request():
-    g.user = None
-    if 'username' in session:
-        g.user = session['username']
-
 
 @app.route("/logout")
 def logout():
     """removes the user from the session and logs out."""
     session.pop('username', None)
     return redirect('/')
-
 
    
 @app.route("/register", methods=["GET", "POST"])
@@ -99,6 +91,7 @@ def registration():
             print(new_user)
             db.session.add(new_user)
             db.session.commit()
+            session["username"] = username
             flash("We will now need you to verify your phone number in order to complete registration.")
             return render_template("phone_verification.html")
         else:
@@ -130,11 +123,11 @@ def verify():
     """Verify user new phone with code that was sent to the number provided."""
     if request.method == "POST":
         token = request.form.get("token")
+        
         phone_number = session.get("phone_number")
         country_code = session.get("country_code")
-
+        
         verification = api.phones.verification_check(phone_number, country_code, token)
-
         
         if verification.ok():
             if 'username' in session:
@@ -142,12 +135,12 @@ def verify():
                 user = User.query.filter_by(username=username).first()
                 user.phone_num = phone_number
                 db.session.commit()
-                flash("Successful! Thanks for verifying. You added the following mobile " +
-                        "number {} to your account.".format(phone_number))
-                return redirect('/profile/{}'.format(session['username']))
+                flash("Successful! Thanks for verifying. You added the following mobile number {} to your account.".format(phone_number))
+                return redirect("/profile/{}".format(username))
         else:
             flash("Wrong verification code")
-            return redirect(url_for("verify"))        
+            return redirect(url_for("verify"))       
+            
 
     return render_template("verify.html")
 

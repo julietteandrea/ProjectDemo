@@ -13,8 +13,8 @@
 {% endblock %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Project Demo</a>
+<nav class="navbar navbar-expand-lg" style="background-color: #16212C;">
+  <a class="navbar-brand" href="#" style="color: #DB3687;">Project Demo</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -22,7 +22,7 @@
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav">
     <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user_username }}</a>
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">{{ user_username }}</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="/profile/{{ user_username }}">Profile/Call log</a>
           <a class="dropdown-item" href="#">Make a call</a>
@@ -34,8 +34,9 @@
 </form>
 </nav>
 
-<h1>Make a call</h1>
+<h1 align="center">Make a call</h1>
 
+<div align="center" >
 	<form action="/call" method="POST">
 		<!-- #no need for user to input their num, we'll just grab it from the db. 
 		Enter a phone number(add country code): 
@@ -44,6 +45,7 @@
 		<input type="tel" name="phonenum2" autocomplete="on" required><br>
 		<input type="submit" value="call">
 	</form>
+</div>
 
 <!--JQuery, Popper.js, and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
