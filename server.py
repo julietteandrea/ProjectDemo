@@ -7,8 +7,7 @@ from jinja2 import StrictUndefined
 from model import connect_to_db, db, User, Phonecalls
 from authy.api import AuthyApiClient
 import datetime
-
-
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -37,7 +36,7 @@ RETURN_CALL_USERNAME = {}
 
 @app.route("/")
 def index():
-    """displays homepage."""
+    """Displays homepage."""
     if 'username' not in session:
         return render_template("homepage.html")
     else:
@@ -46,16 +45,16 @@ def index():
 
 @app.route("/", methods=["POST"])
 def login_or_register():
-    """shows the homepage, user must sign in(validation) or register"""
+    """User signing in or validating their account."""
     username = request.form.get('username')
-    password = request.form.get('pw')
+    unhashed_password = request.form.get('pw')
     user_cred = User.query.filter_by(username=username).first()
 
     if user_cred is None:
         flash("Username not found! Try again or Register below.")
         return render_template("homepage.html")
-        
-    if user_cred.password == password:
+    
+    if check_password_hash(user_cred.password, unhashed_password):
         session['username'] = username
         if user_cred.phone_num is None:
             flash("Welcome back! Please verify your phone number to complete registration.")
@@ -66,11 +65,11 @@ def login_or_register():
     else:
         flash("Incorrect password, try again")
         return render_template("homepage.html")
-    
+       
 
 @app.route("/logout")
 def logout():
-    """removes the user from the session and logs out."""
+    """Removes the user from the session and logs them out."""
     session.pop('username', None)
     return redirect('/')
 
@@ -84,8 +83,12 @@ def registration():
     else:
         username = request.form.get('new_username')
         email = request.form.get('email')
-        password = request.form.get('pw1')
+        unhashed_password = request.form.get('pw1')
 
+        #This generates a password hash.
+        hashed_value = generate_password_hash(unhashed_password, method='sha256')
+        password = hashed_value
+        
         if User.query.filter_by(username=username).first() is None:
             new_user = User(email=email, password=password, username=username)
             print(new_user)
@@ -97,52 +100,59 @@ def registration():
         else:
             flash("The username '{}' is already taken, please choose another".format(username))
             return redirect("/")
-    
 
-@app.route("/phone_verification", methods=["GET", "POST"])
-def phone_verification():
-    """Verify new user phone."""
-    if request.method == "POST":
-        country_code = request.form.get("country_code")
-        phone_number = request.form.get("phone_number")
-        method = request.form.get("method")
 
-        session['country_code'] = country_code
-        session['phone_number'] = phone_number
-
-        api.phones.verification_start(phone_number, country_code, via=method)
-        return redirect(url_for("verify"))
-    else:
-        return redirect("/phone_verification")
-    
+@app.route("/phone_verification")
+def show_phone_verification():
+    """Displays phone verification form."""
     return render_template("phone_verification.html")
+    
+
+@app.route("/phone_verification", methods=["POST"])
+def phone_verification():
+    """Gathers the user's phone verification data before sending it to verify."""
+    country_code = request.form.get("country_code")
+    phone_number = request.form.get("phone_number")
+    method = request.form.get("method")
+
+    session['country_code'] = country_code
+    session['phone_number'] = phone_number
+
+    api.phones.verification_start(phone_number, country_code, via=method)
+    return redirect(url_for("verify"))
 
 
-@app.route("/verify", methods=["GET", "POST"])
-def verify():
-    """Verify user new phone with code that was sent to the number provided."""
-    if request.method == "POST":
-        token = request.form.get("token")
-        
-        phone_number = session.get("phone_number")
-        country_code = session.get("country_code")
-        
-        verification = api.phones.verification_check(phone_number, country_code, token)
-        
-        if verification.ok():
-            if 'username' in session:
-                username = session['username']
-                user = User.query.filter_by(username=username).first()
-                user.phone_num = phone_number
-                db.session.commit()
-                flash("Successful! Thanks for verifying. You added the following mobile number {} to your account.".format(phone_number))
-                return redirect("/profile/{}".format(username))
-        else:
-            flash("Wrong verification code")
-            return redirect(url_for("verify"))       
-            
-
+@app.route("/verify")
+def show_code_verification():
+    """Displays verification form where user inputs the code sent to them."""    
     return render_template("verify.html")
+
+
+@app.route("/verify", methods=["POST"])
+def verify():
+    """Verifies user's new phone and adds it to the db."""
+    token = request.form.get("token")
+        
+    phone_number = session.get("phone_number")
+    country_code = session.get("country_code")
+      
+    verification = api.phones.verification_check(phone_number, country_code, token)
+        
+    if verification.ok():
+        if 'username' in session:
+            username = session['username']
+            user = User.query.filter_by(username=username).first()
+            user.phone_num = phone_number
+            db.session.commit()
+            flash("Successful! Thanks for verifying. You added the following mobile number {} to your account.".format(phone_number))
+            return redirect("/profile/{}".format(username))
+        else:
+            flash("Something went wrong! Please log in and verify again")
+            return redirect("/")
+    else:
+        flash("Wrong verification code")
+        return redirect(url_for("verify"))    
+            
 
 ####################### PROFILE VIEW ##############################################
 
@@ -151,6 +161,11 @@ def profile_view(username):
     """displays user call log/user details."""
     if 'username' not in session:
         return redirect("/")
+
+    user_cred = User.query.filter_by(username=session['username']).first()
+    if user_cred.phone_num is None:
+        flash("Welcome back! Please verify your phone number to complete registration.")
+        return render_template("phone_verification.html")
     
     user_detail = User.query.filter_by(username=session['username']).first()
     user_username = user_detail.username
@@ -189,19 +204,21 @@ def add_comment():
 
 @app.route("/delete", methods=['POST'])
 def delete_call():
-    """deletes call data from call log and db. function done by the user."""
+    """Deletes call data from call log and db."""
     call_sid = request.form.get("call_sid")
     call = Phonecalls.query.filter_by(call_sid=call_sid).first()
     db.session.delete(call)
     db.session.commit()
     return redirect("/profile/{}".format(session['username']))
-    
+  
+
 ################## CALL DATA FOR DATABASE ####################################   
 
 from pytz import timezone
 import datetime
 
 def timestamp2nicetime(timestamp):
+    """Formats the time."""
     dt = datetime.datetime.strptime(timestamp,"%a, %d %b %Y %H:%M:%S %z")
     return dt.astimezone(timezone('US/Pacific')).strftime("%a %d %b %Y %H:%M") + " PST"
 
@@ -211,21 +228,20 @@ def datetime2nicetime(dt):
 
 @app.route("/call-to-db", methods=['POST'])
 def call_to_db():
-    """adding outgoing call to db."""
-    """twilio will send info here when call ends. this route is ONLY called by twilio's api."""
+    """Adds outgoing call to db."""
+    """Twilio sends info here when call ends. This route is ONLY called by twilio's api."""
     """sessions no longer exist in this function."""
       
-    #get specific data info from call via request.get_data()
+    #get specific data info from call via request.form
     #giving them variable names to store in database
     data = request.form
     call_sid = data["CallSid"]
-#    print(data["Timestamp"])
-#    print(type(data["Timestamp"]))
-    timestamp = timestamp2nicetime(data["Timestamp"])#[0:-15]
+    timestamp = timestamp2nicetime(data["Timestamp"])
     recording = data["RecordingUrl"]+".mp3"
     recording_sid = data["RecordingSid"]
     duration1 = int(data["CallDuration"])
     duration = str(datetime.timedelta(seconds=duration1))
+    
     #user_id/username grabbed from global var to add calls according to user in session.
     user_id = CALL_SID_TO_USER_ID_MAP[call_sid]
     
@@ -245,7 +261,7 @@ def call_to_db():
 
 @app.route("/incoming-call-to-db", methods=['GET'])
 def incoming_call_to_db():
-    """adding incoming call to db."""
+    """Adds incoming call to db."""
     data = request.args
     print("incoming call data:")
     print(data)
@@ -257,9 +273,11 @@ def incoming_call_to_db():
     recording_sid = data["RecordingSid"]
     duration1 = int(data["RecordingDuration"])
     duration = str(datetime.timedelta(seconds=duration1))
+    
     #username grabbed from global var to add calls according to user.
     user_name = RETURN_CALL_USERNAME
     print(user_name)
+    
     #DATA TO GO INTO THE DATABASE
     caller_num = data["Caller"][2:]
     caller = User.query.filter_by(phone_num=caller_num).all()
@@ -280,7 +298,7 @@ def incoming_call_to_db():
 
 @app.route("/call")
 def make_call():
-    """renders page where ONLY signed in users can make a call."""
+    """Renders page where ONLY signed in users can make a call."""
     if 'username' in session:
         return render_template('make_call.html', user_username=session['username'])
     else:
@@ -300,11 +318,12 @@ def threewaycall():
 
 @app.route("/call", methods=["POST"])
 def calling():
-    """makes a phone call with two numbers user inputs."""
+    """Makes a phone call to the user's saved number and then to user's input."""
     # in order for second num to be used in "/answer3" function
     global PHONE_NUMBER
     #OPTIONAL: phonenum = request.form.get("phonenum")<-if i want the user to input a dif origin
     #num instead of the one saved inside the db.
+    
     #BELOW: grabs the user's verified num to make the call.
     username = session['username']
     user = User.query.filter_by(username=username).all()
@@ -335,7 +354,8 @@ def calling():
 
 @app.route("/answer", methods=['POST'])
 def answer_call():
-    """Respond to incoming phone calls with a brief message."""
+    """Respond to incoming phone calls with a brief message if phone number is not recognized by our database."""
+    """If the phone number calling us is in the database, user may merge call and record.""" 
 
     #start TwiML response
     resp = VoiceResponse()
