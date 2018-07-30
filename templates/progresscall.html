@@ -5,18 +5,18 @@
 
 {% block content %}
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">TITLE</a>
+<nav class="navbar navbar-expand-lg" style="background-color: #16212C;">
+  <a class="navbar-brand" href="#" style="color: #DB3687;"><strong>Project Demo</strong></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <form class="form-inline">
-  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+  <div class="" id="navbarNavDropdown">
     <ul class="navbar-nav">
     <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user_username }}</a>
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">{{ user_username }}</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="/profile/{{ user_username }}">Profile/Call log</a>
+          <a class="dropdown-item" href="/profile/{{ user_username }}"">Profile/Call log</a>
           <a class="dropdown-item" href="/call">Make a call</a>
           <a class="dropdown-item" href="/logout">Logout</a>
         </div>

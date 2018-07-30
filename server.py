@@ -1,13 +1,13 @@
 
 from flask import Flask, render_template, request, session, flash, redirect, g, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
 from twilio.twiml.voice_response import VoiceResponse, Dial, Say, Record
-from twilio.rest import Client
-import os
-from jinja2 import StrictUndefined
 from model import connect_to_db, db, User, Phonecalls
 from authy.api import AuthyApiClient
+from jinja2 import StrictUndefined
+from twilio.rest import Client
 import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -60,7 +60,6 @@ def login_or_register():
             flash("Welcome back! Please verify your phone number to complete registration.")
             return render_template("phone_verification.html")
         else:
-            flash("Log in Successful")
             return redirect('/profile/{}'.format(session['username']))
     else:
         flash("Incorrect password, try again")
@@ -233,7 +232,6 @@ def call_to_db():
     """sessions no longer exist in this function."""
       
     #get specific data info from call via request.form
-    #giving them variable names to store in database
     data = request.form
     call_sid = data["CallSid"]
     timestamp = timestamp2nicetime(data["Timestamp"])

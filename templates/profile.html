@@ -6,7 +6,7 @@
 {% block content %}
 
 <nav class="navbar navbar-expand-lg" style="background-color: #16212C;">
-  <a class="navbar-brand" href="#" style="color: #DB3687;">Project Demo</a>
+  <a class="navbar-brand" href="#" style="color: #DB3687;"><strong>Project Demo</strong></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -26,19 +26,20 @@
 </form>
 </nav>
 
-
-<h2>Account details</h2>
-<p><b>Username:</b> {{ user_username }}<br>
-<b>Primary phone number:</b> {{ user_phone }}<br>
-<b>Email address:</b> {{ user_email }}<br></p>
-
+<!-- Background image -->
+<div class="bg">
+<big><h2>Account details</h2>
+Username: {{ user_username }}<br>
+Primary phone number: {{ user_phone }}<br>
+Email address: {{ user_email }}<br>
+</big>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm"></div>
         <div class="col-8">
     <h2>Call Log</h2>
-    <table id="calllog_table" class="table-sm table-hover">
+    <table id="calllog_table" class="table-sm table-hover table-dark table-bordered">
         <thead>
             <tr>
                 <th scope="col">Date created</th>
@@ -69,8 +70,6 @@
                     </form>
                     </div>
                 </td>
-                    
-                
             </tr>
                 {% endfor %}
         </tbody>
@@ -78,12 +77,11 @@
 </div>
 <div class="col-sm"></div>
 </div>
+<style>
+    body, html {height: 100%} .bg {background-image: url("https://www.shore-access.com/wp-content/uploads/2017/08/portfolio-background.jpg"); height: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;}
+</style>
 </div>
-
-
-
-
-
+</div>
 
 <!--JQuery, Popper.js, and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
