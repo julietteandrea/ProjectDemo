@@ -345,7 +345,14 @@ def calling():
     print(session)
     user_name = session["username"]
     CALL_SID_TO_USER_ID_MAP[call_sid] = user_name
-    return render_template('progresscall.html', user_username=user_name) 
+    return redirect(url_for("call_in_progress")) 
+
+
+@app.route("/progresscall")
+def call_in_progress():
+    """Displays call in progress and redirects user to profile when call ends."""
+    user_name = session["username"]
+    return render_template("progresscall.html", user_username=user_name)
 
 
 ####################### CALL RETURNED ######################################    
