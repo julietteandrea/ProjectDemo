@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block head %}
-	<title>Phone Verification</title>
-	{% endblock %}
+	
+{% endblock %}
 
 {% block content %}
-	<h1>Project Demo</h1>
+	<h1>You're almost there!</h1>
 
 	<form action="/verify" accept-charset="UTF-8" method="post">
 		<div>
@@ -12,7 +12,8 @@
 			<input name="token" id="token" required>
 		</div>
 		<button name="button" type="submit">Verify</button>
-	</form>
+	</form><br>
+	<form action="/logout"><button name="button" type="submit">Start over</button></form>
 
 <!--JQuery, Popper.js, and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

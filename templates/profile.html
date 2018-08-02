@@ -28,6 +28,12 @@
 </form>
 </nav>
 
+<!--DataTables.net downloaded locally -->
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="/static/js/jquery.dataTables.min.js">
+</script>
+
+
 <!--table with call data -->
 <div class="container-fluid">
     <div class="row">
@@ -55,7 +61,7 @@
                 <td> <div>
                     <form action="/profile_changed" accept-charset="UTF-8" method="post">
                     <input type="hidden" name="call_sid" id="call_sid_id" value="{{ item.call_sid }}">
-                    <input type="text" name="comment" id="comment_id" maxlength="50" value="{{ item.user_comments }}"><input type="submit" value="Save" class="btn-xs">
+                    <input type="text" name="comment" pattern="[A-Za-z0-9!@&%,]+" title="Only letters, numbers, !@&%" id="comment_id" maxlength="50" value="{{ item.user_comments }}"><input type="submit" value="Save" class="btn-xs">
                 </form>
                     </div></td>
                 <td><div>
@@ -96,10 +102,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
 
-<!--DataTables.net downloaded locally -->
-<link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css">
-<script type="text/javascript" charset="utf8" src="/static/js/jquery.dataTables.min.js">
-</script>
 
 <!-- Javascript for this page -->
 <script src="/static/js/profile.js"></script>

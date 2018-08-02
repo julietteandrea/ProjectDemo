@@ -6,6 +6,7 @@ from model import connect_to_db, db, User, Phonecalls
 from authy.api import AuthyApiClient
 from jinja2 import StrictUndefined
 from twilio.rest import Client
+from aux import sanitize
 import datetime
 import os
 
@@ -47,6 +48,7 @@ def index():
 def login_or_register():
     """User signing in or validating their account."""
     username = request.form.get('username')
+    username = username.lower()
     unhashed_password = request.form.get('pw')
     user_cred = User.query.filter_by(username=username).first()
 
@@ -81,6 +83,7 @@ def registration():
         return render_template("homepage.html")
     else:
         username = request.form.get('new_username')
+        username = username.lower()
         email = request.form.get('email')
         unhashed_password = request.form.get('pw1')
 
@@ -112,6 +115,7 @@ def phone_verification():
     """Gathers the user's phone verification data before sending it to verify."""
     country_code = request.form.get("country_code")
     phone_number = request.form.get("phone_number")
+    phone_number = sanitize(phone_number)
     method = request.form.get("method")
 
     session['country_code'] = country_code
@@ -143,8 +147,9 @@ def verify():
             user = User.query.filter_by(username=username).first()
             user.phone_num = phone_number
             db.session.commit()
-            flash("Successful! Thanks for verifying. You added the following mobile number {} to your account.".format(phone_number))
-            return redirect("/profile/{}".format(username))
+            flash("Successful! Thanks for verifying. You added the following mobile number {} to your account. Make your first phone call.".format(phone_number))
+            return redirect("/call")
+            # return redirect("/profile/{}".format(username))
         else:
             flash("Something went wrong! Please log in and verify again")
             return redirect("/")
@@ -327,6 +332,7 @@ def calling():
     user = User.query.filter_by(username=username).all()
     phonenum = user[0].phone_num
     phonenum2 = request.form.get("phonenum2")
+    phonenum2 = sanitize(phonenum2)
     PHONE_NUMBER = phonenum2
 
     call = client.calls.create(record=True,

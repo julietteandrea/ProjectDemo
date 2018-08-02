@@ -44,7 +44,7 @@ class Phonecalls(db.Model):
 	call_sid = db.Column(db.String(200), nullable=False)
 	recording_url = db.Column(db.String)
 	recording_sid = db.Column(db.String(200))
-	number_called = db.Column(db.String(15))
+	number_called = db.Column(db.String(50))
 	user_comments = db.Column(db.String(60))
 
 	def __repr__(self):
