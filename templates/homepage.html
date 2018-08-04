@@ -5,7 +5,7 @@
 
 <nav class="navbar navbar-expand-lg" id="navbar_color">
   <a class="navbar-brand" href="#">
-  	<img src="/static/LogoMakr_1eVpm6.png" width="200" height="200" class="d-inline-block align-top" alt=""></a>
+  	<img src="/static/images/LogoMakr_1eVpm6.png" width="200" height="200" class="d-inline-block align-top" alt=""></a>
    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -15,8 +15,9 @@
 <h3>Login to your account</h3>
 
 <form action="/" method="POST">
-	<input type="text" placeholder="Username" name="username" autocomplete="on" autocapitalize="off" title="Username is case-sensitive" required><br>
-	<input type="password" placeholder="Password" name="pw" required><br>
+	<input type="text" placeholder="Username" name="username" autocomplete="on" autocapitalize="off" required><br>
+	<input type="password" placeholder="Password" name="pw" id="pwhomepage" required><br>
+	<input type="checkbox" onclick="mypw()">Show Password<br>
 	<button type='submit'>Sign in</button>
 </form>
 </div>
@@ -35,4 +36,8 @@
 </div>
 </div>
 	
+<!-- Javascript for this page -->
+<script src="/static/js/homepage.js"></script>
+
+<link rel="stylesheet" href="/static/css/homepage.css">
 {% endblock %}

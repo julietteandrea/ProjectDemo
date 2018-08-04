@@ -1,91 +1,20 @@
 body, html {
-	height: 100%
-	} 
+    height: 100%
+    } 
 
 .bg {
-	background-image: url("https://www.shore-access.com/wp-content/uploads/2017/08/portfolio-background.jpg"); 
-	height: 100%; 
-	background-position: center; 
-	background-repeat: no-repeat; 
-	background-size: cover;
+    background-image: url("https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/r8K5nG9Pxiyh9wvn6/videoblocks-abstract-beautiful-geometric-background-with-moving-lines-dots-and-triangles-plexus-fantasy-abstract-technology-loop-animations_h_flzkommz_thumbnail-full01.png"); 
+    height: 100%; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-size: cover;
 }
 
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 50%; /* Full width */
-    height: 50%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    /*background-color: rgb(0,0,0);*/ /* Fallback color */
-    /*background-color: rgba(0,0,0,0.4);*/ /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-    background-color: white;
-    margin: auto;
-    padding: 20;
-    border: 1px solid #888;
-    width: 70%;
-    /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);*/
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
-
-/* Add Animation */
-@-webkit-keyframes animatetop {
-    from {top:-150px; opacity:0} 
-    to {top:0; opacity:1}
-}
-
-@keyframes animatetop 2
-    from {top:-150px; opacity:0}
-    to {top:0; opacity:1}
-}
-
-/* The Close Button */
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/*#myBtn {
-	border-radius: none;
-	padding: 15px 25px;
-	font-size: 16px;
-	color: #fff;
-	background-color: ##191333;
-	border: none;
-	border-radius: 15px;
-	box-shadow: 0 9px #999;
-}
-
-#myBtn:hover {
-	background-color: #191333;
-}*/
-
-/*#myBtn:active {
-  background-color: #191333;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-*/
 #navbar_color {
 	background-color: transparent;
+}
+
+#progress {
+    font-size: 65px;
+    text-align: center;
 }

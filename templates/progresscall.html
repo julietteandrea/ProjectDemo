@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block head %}
 
+<!-- CSS for timer -->
+<link rel="stylesheet" href="/static/css/timer.css">
+
 {% endblock %}
 
 {% block content %}
@@ -8,7 +11,7 @@
 <!-- navbar -->
 <nav class="navbar navbar-expand-lg" id="navbar_color"> 
     <a class="navbar-brand" href="#">
-    <img src="/static/LogoMakr_1eVpm6.png" width="100" height="100" class="d-inline-block align-top" alt=""></a>
+    <img src="/static/images/LogoMakr_1eVpm6.png" width="100" height="100" class="d-inline-block align-top" alt=""></a>
   </button>
   <form class="form-inline">
   <div class="" id="navbarNavDropdown">
@@ -26,11 +29,29 @@
 </form>
 </nav>
 
-<h1>CALL IN PROGRESS</h1>
+<h1 id="progress">CALL IN PROGRESS</h1>
+
+<!--Stop timer js -->
+<!-- <div class="container"> -->
+  <nav class="controls">
+      <a href="#" class="button" onClick="stopwatch.start();">Start</a>
+      <a href="#" class="button" onClick="stopwatch.lap();">Lap</a>
+      <a href="#" class="button" onClick="stopwatch.stop();">Stop</a>
+      <a href="#" class="button" onClick="stopwatch.restart();">Restart</a>
+      <a href="#" class="button" onClick="stopwatch.clear();">Clear Laps</a>
+    </nav>
+    <div class="stopwatch"></div>
+    <ul class="results"></ul>
+<!-- </div>
+ -->
 
 <!--JQuery, Popper.js, and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+
+<!-- Javascript for this page -->
+<script src="/static/js/timer.js"></script>
+
 
 {% endblock %}

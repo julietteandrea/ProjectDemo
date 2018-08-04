@@ -6,7 +6,7 @@ from model import connect_to_db, db, User, Phonecalls
 from authy.api import AuthyApiClient
 from jinja2 import StrictUndefined
 from twilio.rest import Client
-from aux import sanitize
+from aux import sanitize, sanitize_comments
 import datetime
 import os
 
@@ -27,10 +27,6 @@ client = Client(account_sid, auth_token)
 #Global variable
 CALL_SID_TO_USER_ID_MAP = {}
 RETURN_CALL_USERNAME = {}
-#TODO -- replace with flask.g
-#from flask import g
-#g.CALL_SID_TO_USER_ID_MAP = {}
-
 
 
 ################### LOG IN / REGISTER #######################################
@@ -52,15 +48,22 @@ def login_or_register():
     unhashed_password = request.form.get('pw')
     user_cred = User.query.filter_by(username=username).first()
 
+    #if username doesn't exist inside the database.
     if user_cred is None:
         flash("Username not found! Try again or Register below.")
         return render_template("homepage.html")
-    
+
+    #Checks to see if password matches password in the db.
     if check_password_hash(user_cred.password, unhashed_password):
         session['username'] = username
+        user_calls = User.query.filter_by(username=session['username']).one()
         if user_cred.phone_num is None:
             flash("Welcome back! Please verify your phone number to complete registration.")
             return render_template("phone_verification.html")
+        #If the user hasn't made a call yet, this directs them to make a call.
+        elif user_calls.calls == []:
+            flash("Record a phone call to get started.")
+            return render_template("make_call.html", user_username=session['username'])
         else:
             return redirect('/profile/{}'.format(session['username']))
     else:
@@ -170,6 +173,9 @@ def profile_view(username):
     if user_cred.phone_num is None:
         flash("Welcome back! Please verify your phone number to complete registration.")
         return render_template("phone_verification.html")
+
+
+
     
     user_detail = User.query.filter_by(username=session['username']).first()
     user_username = user_detail.username
@@ -189,6 +195,7 @@ def add_comment():
     print(request.form)
     call_sid = request.form.get("call_sid")
     comment = request.form.get("comment")
+    comment = sanitize_comments(comment)
     print("call_sid = {}".format(call_sid))
     print("comment = {}".format(comment))
 
