@@ -24,6 +24,7 @@ window.onclick = function(event) {
     }
 }
 
+// Delete button in table
 function msg(evt) {
     alert("Call Deleted");
     evt,preventDefault();

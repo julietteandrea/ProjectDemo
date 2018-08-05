@@ -2,19 +2,38 @@ body, html {
     height: 100%
     } 
 
-.bg {
-    background-image: url("https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/r8K5nG9Pxiyh9wvn6/videoblocks-abstract-beautiful-geometric-background-with-moving-lines-dots-and-triangles-plexus-fantasy-abstract-technology-loop-animations_h_flzkommz_thumbnail-full01.png"); 
+.bg_hp {
+    background-image: url("https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/HmIzqHc4eix1fym01/stylish-abstract-engineering-technology-and-science-motion-background-plexus-style-dynamic-wallpaper-polygons-lines-and-dots-in-organic-motion-computer-generated-footage-depth-of-field-settings_hthzsftre_thumbnail-full01.png"); 
     height: 100%; 
     background-position: center; 
     background-repeat: no-repeat; 
     background-size: cover;
 }
 
+.bg {
+    background-color: #252525;
+    height: 100%; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-size: cover;
+}
+
+#navbar_color_hp {
+    background-color: transparent;
+}
+
 #navbar_color {
-	background-color: transparent;
+	background-color: #1B1B1B;
 }
 
 #progress {
     font-size: 65px;
     text-align: center;
+}
+
+.title_head {
+    font-family: Times New Roman, Times, serif;
+    font-size: 50px;
+    font-style: oblique;
+    color: #FFFFFF;
 }

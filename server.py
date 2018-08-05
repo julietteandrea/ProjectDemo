@@ -62,7 +62,7 @@ def login_or_register():
             return render_template("phone_verification.html")
         #If the user hasn't made a call yet, this directs them to make a call.
         elif user_calls.calls == []:
-            flash("Record a phone call to get started.")
+            flash("Record your first phone call.")
             return render_template("make_call.html", user_username=session['username'])
         else:
             return redirect('/profile/{}'.format(session['username']))

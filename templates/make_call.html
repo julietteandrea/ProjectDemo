@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block head %}
+<div class="bg">
 {% endblock %}
 
 {% block content %}
@@ -24,17 +25,17 @@
 </form>
 </nav>
 
-<h1 align="center">Make a call</h1>
+<h1 class="title_head" align="center">Make a call</h1>
 
 <div align="center" >
-	<form action="/call" method="POST">
-		<!-- #no need for user to input their num, we'll just grab it from the db. 
-		Enter a phone number(add country code): 
-		<input type="tel" name="phonenum" autocomplete="on" value="+13474568702"><br><br> -->
-		Enter the phone number you want to record:
-		<input type="tel" name="phonenum2" autocomplete="on" required><br>
-		<input type="submit" value="call">
-	</form>
+  <form action="/call" method="POST">
+    <!-- #no need for user to input their num, we'll just grab it from the db. 
+    Enter a phone number(add country code): 
+    <input type="tel" name="phonenum" autocomplete="on" value="+13474568702"><br><br> -->
+    <a style="color: #FFFFFF;">Enter the phone number you want to record:
+    <input type="tel" name="phonenum2" autocomplete="on" required><br>
+    <input type="submit" value="call">
+  </form>
 </div>
 
 <!--JQuery, Popper.js, and Bootstrap JS -->

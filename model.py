@@ -15,9 +15,9 @@ class User(db.Model):
 
 	user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 	email = db.Column(db.String(64), nullable=False)
-	phone_num = db.Column(db.String(13))
+	phone_num = db.Column(db.String(50))
 	password = db.Column(db.String(200), nullable=False)
-	username = db.Column(db.String(15), nullable=False)
+	username = db.Column(db.String(25), nullable=False)
 
 
 	#define relationship to calls
