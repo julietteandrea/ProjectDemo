@@ -1,3 +1,5 @@
+
+/*https://codepen.io/_Billy_Brown/pen/dbJeh*/
 /* JavaScript for timer in progesscall.html */
 class Stopwatch {
     constructor(display, results) {
@@ -20,31 +22,11 @@ class Stopwatch {
             requestAnimationFrame(this.step.bind(this));
         }
     }
-    
-    lap() {
-        let times = this.times;
-        let li = document.createElement('li');
-        li.innerText = this.format(times);
-        this.results.appendChild(li);
-    }
-    
-    stop() {
+  stop() {
         this.running = false;
         this.time = null;
     }
 
-    restart() {
-        if (!this.time) this.time = performance.now();
-        if (!this.running) {
-            this.running = true;
-            requestAnimationFrame(this.step.bind(this));
-        }
-        this.reset();
-    }
-    
-    clear() {
-        clearChildren(this.results);
-    }
     
     step(timestamp) {
         if (!this.running) return;
@@ -87,11 +69,6 @@ function pad0(value, count) {
     for (; result.length < count; --count)
         result = '0' + result;
     return result;
-}
-
-function clearChildren(node) {
-    while (node.lastChild)
-        node.removeChild(node.lastChild);
 }
 
 let stopwatch = new Stopwatch(

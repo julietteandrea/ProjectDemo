@@ -2,28 +2,17 @@ body, html {
     height: 100%
     } 
 
-.bg_hp {
-    background-image: url("https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/HmIzqHc4eix1fym01/stylish-abstract-engineering-technology-and-science-motion-background-plexus-style-dynamic-wallpaper-polygons-lines-and-dots-in-organic-motion-computer-generated-footage-depth-of-field-settings_hthzsftre_thumbnail-full01.png"); 
-    height: 100%; 
-    background-position: center; 
-    background-repeat: no-repeat; 
-    background-size: cover;
-}
 
-.bg {
-    background-color: #252525;
+body {
+    background-image: url("/static/images/diagmonds.png"); 
     height: 100%; 
-    background-position: center; 
-    background-repeat: no-repeat; 
-    background-size: cover;
-}
-
-#navbar_color_hp {
-    background-color: transparent;
+    background-position: ; 
+    background-repeat: repeat; 
+    background-size: ;
 }
 
 #navbar_color {
-	background-color: #1B1B1B;
+	background-color: #000000;
 }
 
 #progress {
@@ -32,8 +21,12 @@ body, html {
 }
 
 .title_head {
-    font-family: Times New Roman, Times, serif;
+    font-family: 'PT Sans Narrow', sans-serif;
     font-size: 50px;
-    font-style: oblique;
+    /*font-style: oblique;*/
     color: #FFFFFF;
+}
+
+.error {
+    color: red;
 }

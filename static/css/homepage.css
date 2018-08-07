@@ -1,27 +1,172 @@
-.container {
-	font-size: 140px;
-	text-align: left;
-	color: #FFFFFF;
+.bg_hp {
+    background-image: url("/static/images/diagmonds.png"); 
+    
+    height: 100%;
+    width: 100%;
+    
+    background-position: ; 
+    background-repeat: repeat; 
+    background-size: ;
+    
+    position: fixed;
+    top: 0;
+    left:0;
+    z-index: -100;
+    
+ }
+
+/******* NAVBAR ***********/
+#navbar_color_hp {
+    background-color: transparent;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-/*  Background fallback in case of IE8 & down, or in case video doens't load, such as with slower connections  */
-  background: #333;
-  background-attachment: fixed;
-  background-size: cover;
+.navbar-right {
+	text-align: right;
+	align-content: right;
 }
 
-/* The only rule that matters */
-#video-background {
-/*  making the video fullscreen  */
-  position: fixed;
-  right: 0; 
-  bottom: 0;
-  min-width: 100%; 
-  min-height: 100%;
-  width: auto; 
-  height: auto;
-  z-index: -100;
+/*********** LOGIN FORM *************/
+
+@media screen and (max-width: 1300px) {
+  body {
+    background-size: auto;
+  }
 }
+
+/*position of box*/
+#container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#form_box {
+  background: rgba(0, 0, 0, 0.4);
+  width: 400px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+#form_heading {
+  color: #FFFFFF;
+  padding: 20px 0 0 10px;
+  font-family: 'PT Sans Narrow', sans-serif;
+  font-weight: 300;
+  font-size: 2.5em;
+}
+
+#font_20 {
+  font-size: 15px;
+}
+
+input {
+  background: #000000;
+  -webkit-transition: all 0.30s ease-in-out;
+  -moz-transition: all 0.30s ease-in-out;
+  -ms-transition: all 0.30s ease-in-out;
+  -o-transition: all 0.30s ease-in-out;
+  outline: none;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #DDDDDD;
+  color: white;
+  font-family: 'PT Sans Narrow', sans-serif;
+  font-weight: 100;
+  font-size: 20px;
+}
+
+input:focus {
+  box-shadow: 0 0 10px rgba(239, 48, 84, 84);
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid rgba(239, 48, 84, 84);
+}
+
+input[type=submit]:hover {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/****** Registration form ***********/
+body {font-family: 'PT Sans Narrow', sans-serif;}
+* {box-sizing: border-box}
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+    width: 80%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+ 	background-color: #000000;
+ }
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: none;
+    padding-top: 50px;
+   	background-color: rgba(0, 0, 0, 0.7);
+	-webkit-transition: 0.5s;
+	overflow: auto;
+	transition: all 0.3s linear;
+	/*background-color: #000000;*/
+  	opacity:1;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #FFFFFF;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #000000;
+    width: 50%; /* Could be more or less, depending on screen size */
+	/*background-color: rgba(0, 0, 0, 0.3);*/
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 35px;
+    top: 15px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+    color: #f44336;
+    cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+    .signupbtn {
+       width: 100%;
+    }
+}
+

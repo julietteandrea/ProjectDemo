@@ -4,9 +4,9 @@
 }
 
 html {
-  background: #333;
-  color: #bbb;
-  font-family: Menlo;
+  background: #252525;
+  color: white;
+  font-family: 'PT Sans Narrow', sans-serif;
 }
 
 .controls {
@@ -16,39 +16,11 @@ html {
   width: 100%;
 }
 
-.button {
-  color: #bbb;
-  font-size: 3vw;
-  margin: 0 0.5em;
-  text-decoration: none;
-}
-
-.button:first-child {
-    margin-left: 0;
-}
-
-.button:last-child {
-    margin-right: 0;
-}
-
-.button:hover {
-  color: white;
-}
 
 .stopwatch {
   font-size: 15vw;
   height: 100%;
   line-height: 100vh;
   text-align: center;
-}
-
-.results {
-  border-color: #73D216;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  color: white;
 }

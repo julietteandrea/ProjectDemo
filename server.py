@@ -62,7 +62,6 @@ def login_or_register():
             return render_template("phone_verification.html")
         #If the user hasn't made a call yet, this directs them to make a call.
         elif user_calls.calls == []:
-            flash("Record your first phone call.")
             return render_template("make_call.html", user_username=session['username'])
         else:
             return redirect('/profile/{}'.format(session['username']))
@@ -221,7 +220,8 @@ def delete_call():
     db.session.delete(call)
     db.session.commit()
     return redirect("/profile/{}".format(session['username']))
-  
+
+
 
 ################## CALL DATA FOR DATABASE ####################################   
 
@@ -358,14 +358,38 @@ def calling():
     print(session)
     user_name = session["username"]
     CALL_SID_TO_USER_ID_MAP[call_sid] = user_name
+    session["call_sid"] = call_sid
     return redirect(url_for("call_in_progress")) 
 
 
-@app.route("/progresscall")
+################### Redirect after call is complete ##############################
+
+@app.route("/progresscall",methods=["GET"])
 def call_in_progress():
-    """Displays call in progress and redirects user to profile when call ends."""
+    """Displays call in progress."""
+
     user_name = session["username"]
-    return render_template("progresscall.html", user_username=user_name)
+    call_sid = session["call_sid"]
+    return render_template("progresscall.html", user_username=user_name,
+        call_sid=call_sid)
+
+
+@app.route("/iscallactive",methods=["GET"])
+def call_finish():
+    print(request.args)
+    try:
+        call_sid = request.args["call_sid"]
+        call = client.calls(call_sid).fetch()
+        status = call.status
+        if status in ["queued", "ringing", "in-progress"]:
+            return "TRUE"
+        else:
+            return "FALSE"
+    except:
+        return "INVALID_SID"
+    
+#     """Redirect user from in-progress page to profile page once call is complete."""
+#     pass
 
 
 ####################### CALL RETURNED ######################################    

@@ -1,42 +1,59 @@
 {% extends 'base.html' %}
 
 {% block head %}
+
+<nav class="navbar navbar-expand-lg" id="navbar_color_hp">
+  <a class="navbar-brand" href="#">
+    <img src="/static/images/LogoMakr_1eVpm6.png" width="200" height="200" class="d-inline-block align-top" alt=""></a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+ </nav>
+
  
 <link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/authy-form-helpers/2.3/form.authy.min.css" data-turbolinks-track="reload" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/authy-form-helpers/2.3/form.authy.min.js" data-turbolinks-track="reload"></script>
 <link href="https://www.authy.com/form.authy.min.css" media="screen" rel="stylesheet" type="text/css">
 <script src="https://www.authy.com/form.authy.min.js" type="text/javascript"></script>
 
-<div class="bg">
  {% endblock %}
+<div class="bg"></div>
 
 
 {% block content %}
 
-<h1>Verify your phone number here</h1>
+ <!-- message flashes -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  <div style="color: white; font-size: 20px" align="center">
+  {% for message in messages %}
+      {{ message }}</div>
+    {% endfor %}
+{% endif %}
+{% endwith %} 
+
+
+<div align="center">
+<h1 class="title_head">Verify your phone number here</h1>
   <form action="/phone_verification" accept-charset="UTF-8" method="post">
     <div>
-        <label for="authy-countries">Country code:</label>
+        <label for="authy-countries" class="title_head">Country code:</label>
         <select name="country_code" id="authy-countries" data-show-as="number"></select>
     </div>
     <div>
-        <label for="phone_number">Phone number:</label>
+        <label for="phone_number" class="title_head">Phone number:</label>
         <input type="tel" name="phone_number" id="phone_number" required />
     </div>
     <div>
-      <p>Verification method</p>
-        <label for="method_sms">SMS: </label>
+      <p class="title_head">Verification method</p>
+        <label for="method_sms" class="title_head">SMS: </label>
         <input type="radio" name="method" id="method_sms" value="sms" />
-        <label for="method_call">Call: </label>
+        <label for="method_call" class="title_head">Call: </label>
         <input type="radio" name="method" id="method_call" value="call" required/>
     </div>
       <button name="button" type="submit">Verify</button>
   </form><br>
   <form action="/logout"><button name="button" type="submit">Not right now</button></form>
-
-<!--JQuery, Popper.js, and Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+</div>
 
 {% endblock %}

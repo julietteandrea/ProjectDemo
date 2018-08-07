@@ -1,56 +1,105 @@
 {% extends 'base.html' %}
+
 {% block head %}
-<div class="bg_hp">
+<link rel="stylesheet" href="/static/css/homepage.css">
 {% endblock %}
+
 {% block content %}
+<div class="bg_hp"></div>
 
 <nav class="navbar navbar-expand-lg" id="navbar_color_hp">
   <a class="navbar-brand" href="#">
   	<img src="/static/images/LogoMakr_1eVpm6.png" width="200" height="200" class="d-inline-block align-top" alt=""></a>
-   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+   <ul class="nav navbar-nav navbar-right">
+   	<li><a href="#"><input type="submit" value="About"></a></li>
+      <li><a href="#"><input type="submit" onclick="document.getElementById('id01').style.display='block'" style="width:auto;" value="Register Here"></a></li>
+    </ul>
  </nav>
 
+ <!-- message flashes -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+	<div style="color: white; font-size: 20px" align="center">
+	{% for message in messages %}
+    	{{ message }}</div>
+    {% endfor %}
+{% endif %}
+{% endwith %}	
 
-<!-- <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'> -->
-  
-<!--  Video is muted & autoplays, placed after major DOM elements for performance & has an image fallback  -->
-<!-- <video autoplay loop id="video-background" muted plays-inline>
-  <source src="/static/images/Abstract Lights in Tunnel.mp4" type="video/mp4">
-</video> -->
+	
+<!-- Log in form -->	
+	<div id="container">
+      <div id="form_box">
+        <form action="/" method="POST">
+          <p id="form_heading"><i class="fas fa-sign-in-alt"></i> Login to your account</p>
+        <input type="text" placeholder="Username" name="username" autocomplete="on" autocapitalize="off" required><br>
+          <input type="password" placeholder="Password" name="pw" id="pwhomepage" required><br>
+          <input type="checkbox" onclick="mypw()">Show Password<br>
+       
+          <input type="submit" value="SIGN IN"><br><br>
+         </form>
+      </div>
+    </div>
 
-<div>
-	Getting Started
+<!-- Registration form -->
+<div id="id01" class="modal">
+  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+  <form action="/register" method="POST" class="pure-form modal-content">
+    <div class="container">
+      <h1 class="title_head" style="color: #000000;"><i class="fas fa-user-plus" style="color: #A40000;"></i>  Create an account</h1>
+    
+      <hr>
+      <label for="username"><b>Username</b></label><br>
+      <input type="text" pattern="[A-Za-z0-9]+" title="Letters and Numbers only" placeholder="Username" name="new_username"  autocapitalize="off" pattern="{,15}" required><br>
+      
+      
+      <label for="email"><b>Email</b></label><br>
+      <input type="text" placeholder="E-mail address" name="email" required><br>
+
+      <label for="psw"><b>Password</b></label><br>
+      <input type="password" placeholder="Enter password" name="pw1" id="password" pattern=".{5,}" title="Five or more characters" required><br>
+
+      <label for="psw-repeat"><b>Confirm password</b></label><br>
+      <input type="password" placeholder="Confirm password" name="pw2" id="confirm_password" required><br>
+     
+      <div class="clearfix">
+       <input type="submit" class="signupbtn pure-button pure-button-primary" value="SIGN UP"><br>
+      </div>
+    </div>
+  </form>
 </div>
 
-<div align="center">
-<h3>Login to your account</h3>
 
-<form action="/" method="POST">
-	<input type="text" placeholder="Username" name="username" autocomplete="on" autocapitalize="off" required><br>
-	<input type="password" placeholder="Password" name="pw" id="pwhomepage" required><br>
-	<input type="checkbox" onclick="mypw()">Show Password<br>
-	<button type='submit'>Sign in</button>
-</form>
-</div>
 
-<div align="center">
-<form action="/register" method="POST" class="pure-form">
-<div>
-	<h4>Don't have an account? Sign Up</h4>
-	<input type="text" pattern="[A-Za-z0-9]+" title="Letters and Numbers only" placeholder="Username" name="new_username"  autocapitalize="off" pattern="{,15}" required><br>
-	<input type="email" placeholder="E-mail address" name="email" required><br>
-	<input type="password" placeholder="Enter password" name="pw1" id="password" pattern=".{5,}" title="Five or more characters" required><br>
-	<input type="password" placeholder="Confirm password" name="pw2" id="confirm_password" required><br>
-	<button type="submit" class="pure-button pure-button-primary">Sign up</button>
+
+<!-- <div align="center">
+	<form action="/register" method="POST" class="pure-form">
+	<div>
+		<h4 class="title_head">Don't have an account? Sign Up</h4>
+		<input type="text" pattern="[A-Za-z0-9]+" title="Letters and Numbers only" placeholder="Username" name="new_username"  autocapitalize="off" pattern="{,15}" required><br>
+		<input type="email" placeholder="E-mail address" name="email" required><br>
+		<input type="password" placeholder="Enter password" name="pw1" id="password" pattern=".{5,}" title="Five or more characters" required><br>
+		<input type="password" placeholder="Confirm password" name="pw2" id="confirm_password" required><br>
+		<button type="submit" class="pure-button pure-button-primary">Sign up</button>
+	</div>
+	</form>
 </div>
-</form>
-</div>
-</div>
+ -->
 	
 <!-- Javascript for this page -->
 <script src="/static/js/homepage.js"></script>
 
-<link rel="stylesheet" href="/static/css/homepage.css">
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
 {% endblock %}
+
