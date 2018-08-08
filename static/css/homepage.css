@@ -5,14 +5,14 @@
     width: 100%;
     
     background-position: ; 
-    background-repeat: repeat; 
+    background-repeat: no-repeat; 
     background-size: ;
     
     position: fixed;
     top: 0;
     left:0;
     z-index: -100;
-    
+    filter: blur(2px)
  }
 
 /******* NAVBAR ***********/
@@ -168,5 +168,32 @@ input[type=text], input[type=password] {
     .signupbtn {
        width: 100%;
     }
+}
+
+/*FOOTER*/
+.footer {
+  position: absolute;
+  bottom: 0px;
+  font-size: 5px;
+  left: 18px;
+  right: 18px;
+  margin: auto;
+  font-size: 1em;
+  color: rgba(239, 48, 84, 84);
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #beb4c9;
+}
+
+a:active {
+  text-decoration: none;
+  color: #fff;
 }
 

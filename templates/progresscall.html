@@ -29,20 +29,21 @@
 </form>
 </nav>
 
-<h1 class="title_head" id="progress">CALL IN PROGRESS</h1>
+<div id="redirect_page" align="center">
+<h1 class="title_head">CALL IN PROGRESS</h1>
+<p> You will be redirected to your call-log page after the call has completed. </p>
+</div> 
 
 <div id="inprogress"></div>
 
 <!--Stop timer js -->
-<!-- <div class="container"> -->
   <nav class="controls">
       <body onload="stopwatch.start();">
   </nav>
     
     <div class="stopwatch"></div>
     <ul class="results"></ul>
-<!-- </div>
- -->
+
 
 <!-- Javascript for this page -->
 <script src="/static/js/timer.js"></script>
@@ -61,6 +62,7 @@
             //$("#inprogress").html(result);
             if (result == "FALSE") {
               stopwatch.stop();
+              window.location.assign("/profile/{{ user_username }}");
               $("#inprogress").html("Call is complete.");
             }
           }

@@ -11,7 +11,7 @@
   <a class="navbar-brand" href="#">
   	<img src="/static/images/LogoMakr_1eVpm6.png" width="200" height="200" class="d-inline-block align-top" alt=""></a>
    <ul class="nav navbar-nav navbar-right">
-   	<li><a href="#"><input type="submit" value="About"></a></li>
+   	<li><a href="#"><input type="submit" onclick="typeWriter()" value="About"></a></li>
       <li><a href="#"><input type="submit" onclick="document.getElementById('id01').style.display='block'" style="width:auto;" value="Register Here"></a></li>
     </ul>
  </nav>
@@ -25,6 +25,8 @@
     {% endfor %}
 {% endif %}
 {% endwith %}	
+
+<br><br><p id="demo" class="title_head"></p>
 
 	
 <!-- Log in form -->	
@@ -69,37 +71,15 @@
   </form>
 </div>
 
-
-
-
-<!-- <div align="center">
-	<form action="/register" method="POST" class="pure-form">
-	<div>
-		<h4 class="title_head">Don't have an account? Sign Up</h4>
-		<input type="text" pattern="[A-Za-z0-9]+" title="Letters and Numbers only" placeholder="Username" name="new_username"  autocapitalize="off" pattern="{,15}" required><br>
-		<input type="email" placeholder="E-mail address" name="email" required><br>
-		<input type="password" placeholder="Enter password" name="pw1" id="password" pattern=".{5,}" title="Five or more characters" required><br>
-		<input type="password" placeholder="Confirm password" name="pw2" id="confirm_password" required><br>
-		<button type="submit" class="pure-button pure-button-primary">Sign up</button>
-	</div>
-	</form>
+<div class="footer">
+    <hr>
+        <p><a href="https://github.com/julietteandrea/Trifecta-callRecorder">
+          <strong><u>Trifecta</u>: Let Trifecta help you receive quality assurance perfecta. </a></strong> |
+          <strong>© <a href="https://www.linkedin.com/in/juliettegil-/">Juliette Gil</a></strong> August 2018</p>
 </div>
- -->
-	
+
 <!-- Javascript for this page -->
 <script src="/static/js/homepage.js"></script>
-
-<script>
-// Get the modal
-var modal = document.getElementById('id01');
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-</script>
 
 {% endblock %}
 
