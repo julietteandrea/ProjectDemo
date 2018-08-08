@@ -11,7 +11,7 @@ $(document).ready(
         //Create a DataTable
         var data_table = $('#calllog_table').DataTable(
             {
-                "order": [[ 0, "asc" ]]
+                "order": [[ 0, "desc" ]]
             });
         //var column = data_table.columns(0);
         //column.visible(false);

@@ -40,6 +40,12 @@ def index():
         return redirect('/profile/{}'.format(session['username']))
 
 
+@app.route("/about")
+def about_trifecta():
+    """Displays 'about' page in homepage."""
+    return render_template("about.html")
+
+
 @app.route("/", methods=["POST"])
 def login_or_register():
     """User signing in or validating their account."""
@@ -320,7 +326,7 @@ def threewaycall():
     
     print(request.get_data())
     response = VoiceResponse()
-    response.say("Please hold while we connect you", voice='alice')
+    response.say("Connecting, please hold", voice='alice')
     response.dial(PHONE_NUMBER)
     
     return str(response)

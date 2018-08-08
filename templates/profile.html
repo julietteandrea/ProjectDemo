@@ -48,7 +48,9 @@
 <div align="center" class="title_head" style="font-size: 25px;">
 <p><b> USERNAME:</b> {{ user_username }}</p>
 <p><b>PRIMARY PHONE NUMBER:</b> {{ user_phone }}</p>
-<p><b>EMAIL ADDRESS:</b> {{ user_email }}</p>
+<p><b>EMAIL ADDRESS:</b> {{ user_email }}</p><br>
+<p id="title_head" style="font-size: 20px;color: #B4A747;"">Trifecta's phone number: (669) 271-7646<br>
+    We recommend saving this number in your contacts for faster serach</p>
 </div>
 
 <!--table with call data -->
@@ -100,7 +102,6 @@
     </div>
 </div>
 
-
 <!--DataTables.net downloaded locally -->
 <link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css">
 <script type="text/javascript" charset="utf8" src="/static/js/jquery.dataTables.min.js">
@@ -114,7 +115,6 @@ function msg(evt) {
     evt,preventDefault();
 }
     
-/*deleteBtn.addEventListener('submit', msg);*/
 //Tell browser what to call when the page is ready to be viewed
 $(document).ready( 
     //Call this anonymous function

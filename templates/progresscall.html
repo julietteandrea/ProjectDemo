@@ -29,8 +29,8 @@
 </form>
 </nav>
 
-<div id="redirect_page" align="center">
-<h1 class="title_head">CALL IN PROGRESS</h1>
+<div id="redirect_page" style="margin: 0 auto; text-align: center;">
+<h1 class="title_head">CALL IN PROGRESS...</h1>
 <p> You will be redirected to your call-log page after the call has completed. </p>
 </div> 
 
@@ -47,8 +47,6 @@
 
 <!-- Javascript for this page -->
 <script src="/static/js/timer.js"></script>
- 
-
 <script type="text/javascript">
     var g_call_sid = "";
     function check_finished() {
@@ -63,12 +61,11 @@
             if (result == "FALSE") {
               stopwatch.stop();
               window.location.assign("/profile/{{ user_username }}");
-              $("#inprogress").html("Call is complete.");
+              $("#inprogress").html("");
             }
           }
         });
     }
-
 
     //https://stackoverflow.com/questions/4842590/how-to-run-a-function-when-the-page-is-loaded
      function codeAddress() {
@@ -85,6 +82,5 @@
         //need to use document.ready not onload
       $(document).ready(codeAddress);
 </script>
-
 
 {% endblock %}

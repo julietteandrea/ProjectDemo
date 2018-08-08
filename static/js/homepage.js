@@ -19,14 +19,3 @@ window.onclick = function(event) {
     }
 }
 
-var i = 0;
-var txt = 'Welcome to Trifecta!';
-var speed = 50;
-
-function typeWriter() {
-  if (i < txt.length) {
-    document.getElementById("demo").innerHTML += txt.charAt(i);
-    i++;
-    setTimeout(typeWriter, speed);
-  }
-}

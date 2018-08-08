@@ -197,3 +197,18 @@ a:active {
   color: #fff;
 }
 
+/*ABOUT PAGE*/
+
+#about_text {
+  font-family:'PT Sans Narrow', sans-serif;
+  font-size: 20px;
+  color: white;
+}
+
+#about {
+    font-family: 'PT Sans Narrow', sans-serif;
+    color: #FFFFFF;   
+    width: 50%;
+    height: 100%;
+    float: center;
+}
