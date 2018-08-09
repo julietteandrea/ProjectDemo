@@ -208,7 +208,14 @@ a:active {
 #about {
     font-family: 'PT Sans Narrow', sans-serif;
     color: #FFFFFF;   
-    width: 50%;
+    width: 70%;
     height: 100%;
     float: center;
+}
+
+#imgsize {
+
+    width:105px; /* you can use % */
+    height: auto;
+    box-shadow: 1px;
 }
