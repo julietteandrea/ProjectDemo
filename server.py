@@ -40,10 +40,12 @@ def index():
         return redirect('/profile/{}'.format(session['username']))
 
 
+
 @app.route("/about")
 def about_trifecta():
     """Displays 'about' page in homepage."""
     return render_template("about.html")
+
 
 
 @app.route("/", methods=["POST"])
@@ -76,6 +78,7 @@ def login_or_register():
         return render_template("homepage.html")
        
 
+
 @app.route("/logout")
 def logout():
     """Removes the user from the session and logs them out."""
@@ -83,6 +86,7 @@ def logout():
     return redirect('/')
 
    
+
 @app.route("/register", methods=["GET", "POST"])
 def registration():
     """Add new user to database"""
@@ -112,11 +116,13 @@ def registration():
             return redirect("/")
 
 
+
 @app.route("/phone_verification")
 def show_phone_verification():
     """Displays phone verification form."""
     return render_template("phone_verification.html")
     
+
 
 @app.route("/phone_verification", methods=["POST"])
 def phone_verification():
@@ -133,10 +139,12 @@ def phone_verification():
     return redirect(url_for("verify"))
 
 
+
 @app.route("/verify")
 def show_code_verification():
     """Displays verification form where user inputs the code sent to them."""    
     return render_template("verify.html")
+
 
 
 @app.route("/verify", methods=["POST"])
@@ -166,7 +174,9 @@ def verify():
         return redirect(url_for("verify"))    
             
 
+
 ####################### PROFILE VIEW ##############################################
+
 
 @app.route("/profile/<username>")
 def profile_view(username):
@@ -194,6 +204,10 @@ def profile_view(username):
                                            user_calls=user_calls)
 
 
+
+######### COMMENTS AND DELETE FROM TABLE IN PROFILE = DB ###########
+
+
 @app.route("/profile_changed", methods=['POST'])
 def add_comment():
     """user adds a comment to a specific call and gets added into the db."""
@@ -218,6 +232,7 @@ def add_comment():
     return redirect("/profile/{}".format(session['username']))
     
 
+
 @app.route("/delete", methods=['POST'])
 def delete_call():
     """Deletes call data from call log and db."""
@@ -231,6 +246,7 @@ def delete_call():
 
 ################## CALL DATA FOR DATABASE ####################################   
 
+
 from pytz import timezone
 import datetime
 
@@ -239,8 +255,10 @@ def timestamp2nicetime(timestamp):
     dt = datetime.datetime.strptime(timestamp,"%a, %d %b %Y %H:%M:%S %z")
     return dt.astimezone(timezone('US/Pacific')).strftime("%a %d %b %Y %H:%M") + " PST"
 
+
 def datetime2nicetime(dt):
     return dt.astimezone(timezone('US/Pacific')).strftime("%a %d %b %Y %H:%M") + " PST"
+
 
 
 @app.route("/call-to-db", methods=['POST'])
@@ -273,6 +291,7 @@ def call_to_db():
         print(new_call)
       
     return "ok"
+
 
 
 @app.route("/incoming-call-to-db", methods=['GET'])
@@ -310,7 +329,9 @@ def incoming_call_to_db():
     return "ok"
 
 
+
 #################### MAKE PHONE CALLS #########################################
+
 
 @app.route("/call")
 def make_call():
@@ -319,6 +340,7 @@ def make_call():
         return render_template('make_call.html', user_username=session['username'])
     else:
         return redirect("/")
+
 
 @app.route("/answer3", methods=['GET', 'POST'])
 def threewaycall():
@@ -330,6 +352,7 @@ def threewaycall():
     response.dial(PHONE_NUMBER)
     
     return str(response)
+
 
 
 @app.route("/call", methods=["POST"])
@@ -368,7 +391,9 @@ def calling():
     return redirect(url_for("call_in_progress")) 
 
 
+
 ################### Redirect after call is complete ##############################
+
 
 @app.route("/progresscall",methods=["GET"])
 def call_in_progress():
@@ -398,7 +423,9 @@ def call_finish():
 #     pass
 
 
+
 ####################### CALL RETURNED ######################################    
+
 
 @app.route("/answer", methods=['POST'])
 def answer_call():
@@ -431,6 +458,7 @@ def answer_call():
     #print("########## OLD RESP = {}".format(str(resp)))
     print("########## NEW RESP = {}".format(str(r)))
     return r
+
 
 
 ###########################################################################
