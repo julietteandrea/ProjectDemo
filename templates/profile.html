@@ -105,6 +105,10 @@
 <link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css">
 <script type="text/javascript" charset="utf8" src="/static/js/jquery.dataTables.min.js">
 </script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js">
+</script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js">
+</script>
 
 <!-- Javascript for this page -->
 <script type="text/javascript">
@@ -116,11 +120,15 @@ function msg(evt) {
 $(document).ready( 
     //Call this anonymous function
     function () {
+	console.log("test");
+	//Register a date/time format to moment
+    	$.fn.dataTable.moment( 'ddd DD MMM YYYY HH:mm [PST]' );
         //Create a DataTable
         var data_table = $('#calllog_table').DataTable(
             {
-                "order": [[ 2, "desc" ]]
+                "order": [[ 0, "desc" ]]
             });
+
     } 
 );
 </script>

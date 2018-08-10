@@ -4,7 +4,7 @@ After=syslog.target network.target
 
 [Service]
 User=ubuntu
-ExecStart=/bin/bash -c "source /home/ubuntu/Trifecta-callRecorder/.bashrc\
+ExecStart=/bin/bash -c "source /home/ubuntu/Trifecta-callRecorder/.bash_variables\
 && source /home/ubuntu/Trifecta-callRecorder/env/bin/activate\
 && python3 /home/ubuntu/Trifecta-callRecorder/server.py &>> /home/ubuntu/Trifecta-callRecorder/flask.log"
 Restart=always
