@@ -2,3 +2,4 @@ env/
 *.pyc
 config.py
 scratchpad.py
+flask.log

@@ -10,6 +10,9 @@ from aux import sanitize, sanitize_comments
 import datetime
 import os
 
+
+print(os.environ)
+
 app = Flask(__name__)
 app.config.from_object('config')
 app.jinja_env.undefined = StrictUndefined
