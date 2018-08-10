@@ -215,7 +215,7 @@ a:active {
 
 #imgsize {
 
-    width:105px; /* you can use % */
+    width:90px; /* you can use % */
     height: auto;
     box-shadow: 1px;
 }
