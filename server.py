@@ -373,10 +373,10 @@ def calling():
 
     call = client.calls.create(record=True,
                         method='GET',
-                        status_callback='http://juliettedemo.ngrok.io/call-to-db',
+                        status_callback='http://trifectaapp.com/call-to-db',
                         status_callback_event='completed',
                         status_callback_method='POST',
-                        url='http://juliettedemo.ngrok.io/answer3',
+                        url='http://trifectaapp.com/answer3',
                         to=phonenum,
                         from_='+16692717646'
                         )
@@ -445,7 +445,7 @@ def answer_call():
         resp.record(method='GET',
                     timeout=24*60*60, #24 hours is a nice large upper bound
                     finish_on_key='',
-                    action='http://juliettedemo.ngrok.io/incoming-call-to-db')
+                    action='http://trifectaapp.com/incoming-call-to-db')
     else:
         resp.say("The person you are trying to reach is unavailable", voice='alice')
     #print("######## request form {}".format(request.form))
