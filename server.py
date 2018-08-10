@@ -23,6 +23,12 @@ auth_token = os.environ["TWILIO_AUTH_TOKEN"]
 client = Client(account_sid, auth_token)
 
 
+#Added a new environment variable TRIFECTA_DEBUG="TRUE"
+DEBUG = os.environ["TRIFECTA_DEBUG"] == "TRUE"
+BASE_URL="http://trifectaapp.com/"
+if DEBUG:
+    BASE_URL="http://juliettedemo.ngrok.io/"
+
 
 #Global variable
 CALL_SID_TO_USER_ID_MAP = {}
@@ -373,10 +379,10 @@ def calling():
 
     call = client.calls.create(record=True,
                         method='GET',
-                        status_callback='http://trifectaapp.com/call-to-db',
+                        status_callback=BASE_URL + "call-to-db",
                         status_callback_event='completed',
                         status_callback_method='POST',
-                        url='http://trifectaapp.com/answer3',
+                        url=BASE_URL + "answer3",
                         to=phonenum,
                         from_='+16692717646'
                         )
@@ -445,7 +451,7 @@ def answer_call():
         resp.record(method='GET',
                     timeout=24*60*60, #24 hours is a nice large upper bound
                     finish_on_key='',
-                    action='http://trifectaapp.com/incoming-call-to-db')
+                    action=BASE_URL + "incoming-call-to-db")
     else:
         resp.say("The person you are trying to reach is unavailable", voice='alice')
     #print("######## request form {}".format(request.form))
