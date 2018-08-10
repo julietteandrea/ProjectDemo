@@ -1,4 +1,0 @@
-# added for TWILIO API usage
-export TWILIO_ACCOUNT_SID='AC74ccd6d28c4c1b252c61b770d99a6bba'
-export TWILIO_AUTH_TOKEN='85bdb5645e327970b5f09ab8441a04d5'
-
