@@ -39,7 +39,7 @@ In-progress call
 <img src="https://c1.staticflickr.com/2/1813/29064401887_2bb4118df0_h.jpg" width="1000">
 
 # Deployment
-[Trifecta](http://www.trifectaapp.com)
+[Trifecta](http://trifectaapp.com)
 
 # About the developer
 Juliette Gil is a Software Engineer in the Bay Area; this is her first independent project, built and deployed in 4 weeks. Visit her on [LinkedIn](https://www.linkedin.com/in/juliettegil-)
