@@ -28,7 +28,7 @@ client = Client(account_sid, auth_token)
 
 #Added a new environment variable TRIFECTA_DEBUG="TRUE"
 DEBUG = os.environ["TRIFECTA_DEBUG"] == "TRUE"
-BASE_URL="http://trifectaapp.com/"
+BASE_URL="https://trifectaapp.com/"
 if DEBUG:
     BASE_URL="http://juliettedemo.ngrok.io/"
 
