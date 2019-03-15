@@ -26,14 +26,14 @@ auth_token = os.environ["TWILIO_AUTH_TOKEN"]
 client = Client(account_sid, auth_token)
 
 
-#Added a new environment variable TRIFECTA_DEBUG="TRUE"
+# Added a new environment variable TRIFECTA_DEBUG="TRUE"
 DEBUG = os.environ["TRIFECTA_DEBUG"] == "TRUE"
-BASE_URL="https://trifectaapp.com/"
+BASE_URL="https://www.trifectaapp.com/"
 if DEBUG:
     BASE_URL="http://juliettedemo.ngrok.io/"
 
 
-#Global variable
+# Global variable
 CALL_SID_TO_USER_ID_MAP = {}
 RETURN_CALL_USERNAME = {}
 
@@ -65,19 +65,19 @@ def login_or_register():
     unhashed_password = request.form.get('pw')
     user_cred = User.query.filter_by(username=username).first()
 
-    #if username doesn't exist inside the database.
+    # If username doesn't exist inside the database.
     if user_cred is None:
         flash("Username not found! Try again or Register below.")
         return render_template("homepage.html")
 
-    #Checks to see if password matches password in the db.
+    # Checks to see if password matches password in the db.
     if check_password_hash(user_cred.password, unhashed_password):
         session['username'] = username
         user_calls = User.query.filter_by(username=session['username']).one()
         if user_cred.phone_num is None:
             flash("Welcome back! Please verify your phone number to complete registration.")
             return render_template("phone_verification.html")
-        #If the user hasn't made a call yet, this directs them to make a call.
+        # If the user hasn't made a call yet, this directs them to make a call.
         elif user_calls.calls == []:
             return render_template("make_call.html", user_username=session['username'])
         else:
@@ -108,7 +108,7 @@ def registration():
         email = request.form.get('email')
         unhashed_password = request.form.get('pw1')
 
-        #This generates a password hash.
+        # This generates a password hash.
         hashed_value = generate_password_hash(unhashed_password, method='sha256')
         password = hashed_value
         
@@ -174,7 +174,6 @@ def verify():
             db.session.commit()
             flash("Successful! Thanks for verifying. You added the following mobile number {} to your account. Make your first phone call.".format(phone_number))
             return redirect("/call")
-            # return redirect("/profile/{}".format(username))
         else:
             flash("Something went wrong! Please log in and verify again")
             return redirect("/")
@@ -189,7 +188,7 @@ def verify():
 
 @app.route("/profile/<username>")
 def profile_view(username):
-    """displays user call log/user details."""
+    """Displays user call log/user details."""
     if 'username' not in session:
         return redirect("/")
 
@@ -219,7 +218,7 @@ def profile_view(username):
 
 @app.route("/profile_changed", methods=['POST'])
 def add_comment():
-    """user adds a comment to a specific call and gets added into the db."""
+    """User adds a comment to a specific call and gets added into the db."""
     print(request.form)
     call_sid = request.form.get("call_sid")
     comment = request.form.get("comment")
@@ -230,9 +229,8 @@ def add_comment():
     
     call = Phonecalls.query.filter_by(call_sid=call_sid).first()
     if call is None:
-        #What do do if the web browser sends an invalid request?
-        #TODO: Something
-        #Right now: nothing
+        # What do do if the web browser sends an invalid request?
+        # TODO: Something - Right now: nothing
         pass
 
     call.user_comments = comment
@@ -273,10 +271,10 @@ def datetime2nicetime(dt):
 @app.route("/call-to-db", methods=['POST'])
 def call_to_db():
     """Adds outgoing call to db."""
-    """Twilio sends info here when call ends. This route is ONLY called by twilio's api."""
-    """sessions no longer exist in this function."""
+    """Twilio sends info here when call ends. This route is ONLY called by Twilio's api."""
+    """Sessions no longer exist in this function."""
       
-    #get specific data info from call via request.form
+    # Get specific data info from call via request.form
     data = request.form
     call_sid = data["CallSid"]
     timestamp = timestamp2nicetime(data["Timestamp"])
@@ -285,10 +283,10 @@ def call_to_db():
     duration1 = int(data["CallDuration"])
     duration = str(datetime.timedelta(seconds=duration1))
     
-    #user_id/username grabbed from global var to add calls according to user in session.
+    # User_id/username grabbed from global var to add calls according to user in session.
     user_id = CALL_SID_TO_USER_ID_MAP[call_sid]
     
-    #DATA TO GO INTO THE DATABASE
+    # DATA TO GO INTO THE DATABASE
     user = User.query.filter_by(username=user_id).all()
     userid = user[0].user_id
     if userid > 0:
@@ -318,11 +316,11 @@ def incoming_call_to_db():
     duration1 = int(data["RecordingDuration"])
     duration = str(datetime.timedelta(seconds=duration1))
     
-    #username grabbed from global var to add calls according to user.
+    # Username grabbed from global var to add calls according to user.
     user_name = RETURN_CALL_USERNAME
     print(user_name)
     
-    #DATA TO GO INTO THE DATABASE
+    # DATA TO GO INTO THE DATABASE
     caller_num = data["Caller"][2:]
     caller = User.query.filter_by(phone_num=caller_num).all()
     
@@ -353,7 +351,7 @@ def make_call():
 
 @app.route("/answer3", methods=['GET', 'POST'])
 def threewaycall():
-    """make a three-way call."""
+    """Make a three-way call."""
     
     print(request.get_data())
     response = VoiceResponse()
@@ -367,12 +365,12 @@ def threewaycall():
 @app.route("/call", methods=["POST"])
 def calling():
     """Makes a phone call to the user's saved number and then to user's input."""
-    # in order for second num to be used in "/answer3" function
+    # In order for second num to be used in "/answer3" function
     global PHONE_NUMBER
-    #OPTIONAL: phonenum = request.form.get("phonenum")<-if i want the user to input a dif origin
+    # OPTIONAL: phonenum = request.form.get("phonenum")<-if i want the user to input a dif origin
     #num instead of the one saved inside the db.
     
-    #BELOW: grabs the user's verified num to make the call.
+    # BELOW: grabs the user's verified num to make the call.
     username = session['username']
     user = User.query.filter_by(username=username).all()
     phonenum = user[0].phone_num
@@ -390,8 +388,8 @@ def calling():
                         from_='+16692717646'
                         )
 
-    #saving user-in-session's info to a global var to use for when twilio sends only call data back. 
-    #Twilio won't have client side info. Call data is sent to a function unable to be called by flask
+    # Saving user-in-session's info to a global var to use for when twilio sends only call data back. 
+    # Twilio won't have client side info. Call data is sent to a function unable to be called by flask
     call_sid = call.sid
     print(session)
     user_name = session["username"]
@@ -407,7 +405,6 @@ def calling():
 @app.route("/progresscall",methods=["GET"])
 def call_in_progress():
     """Displays call in progress."""
-
     user_name = session["username"]
     call_sid = session["call_sid"]
     return render_template("progresscall.html", user_username=user_name,
@@ -427,10 +424,6 @@ def call_finish():
             return "FALSE"
     except:
         return "INVALID_SID"
-    
-#     """Redirect user from in-progress page to profile page once call is complete."""
-#     pass
-
 
 
 ####################### CALL RETURNED ######################################    
@@ -441,12 +434,11 @@ def answer_call():
     """Respond to incoming phone calls with a brief message if phone number is not recognized by our database."""
     """If the phone number calling us is in the database, user may merge call and record.""" 
 
-    #start TwiML response
+    # Start TwiML response
     resp = VoiceResponse()
-    #read a message aloud to the caller if caller calls the twilio num
-    #if caller number in database, record, otherwise, text to voice message.
+    # Read a message aloud to the caller if caller calls the twilio num
+    # If caller number in database, record, otherwise, text to voice message.
     data = request.form
-    print("################# data {}".format(data))
     caller_num = data["Caller"][2:]
     caller = User.query.filter_by(phone_num=caller_num).all()
     user_num = caller[0].phone_num
@@ -458,13 +450,12 @@ def answer_call():
     else:
         resp.say("The person you are trying to reach is unavailable", voice='alice')
     #print("######## request form {}".format(request.form))
-    #recording caller's phone call
+    # Recording caller's phone call
     #resp.record()
     #end the call when caller hangsup
         resp.hangup()
     r = str(resp)
     #r = r.replace("finishonkey","finishOnKey")        
-    #print("########## OLD RESP = {}".format(str(resp)))
     print("########## NEW RESP = {}".format(str(r)))
     return r
 
