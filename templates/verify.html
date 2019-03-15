@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-{% block head %}
-	
-{% endblock %}
+{% block head %}{% endblock %}
 <div class="bg">
 {% block content %}
 
@@ -13,8 +11,7 @@
   </button>
  </nav>
 
-
- <!-- message flashes -->
+<!-- message flashes -->
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 	<div style="color: white; font-size: 20px" align="center">
@@ -23,8 +20,6 @@
     {% endfor %}
 {% endif %}
 {% endwith %}	
-
-
 
 <div align="center">
 	<h1 class="title_head">You're almost there!</h1>
@@ -39,5 +34,4 @@
 		<form action="/logout"><button name="button" type="submit">Start over</button></form>
 </div>
 </div>
-
 {% endblock %}
